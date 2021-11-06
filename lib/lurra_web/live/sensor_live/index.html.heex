@@ -1,0 +1,41 @@
+<h1>Listing Sensors</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal LurraWeb.SensorLive.FormComponent,
+    id: @sensor.id || :new,
+    title: @page_title,
+    action: @live_action,
+    sensor: @sensor,
+    return_to: Routes.sensor_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Value type</th>
+      <th>Name</th>
+      <th>Sensor type</th>
+      <th>Unit</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="sensors">
+    <%= for sensor <- @sensors do %>
+      <tr id={"sensor-#{sensor.id}"}>
+        <td><%= sensor.value_type %></td>
+        <td><%= sensor.name %></td>
+        <td><%= sensor.sensor_type %></td>
+        <td><%= sensor.unit %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.sensor_show_path(@socket, :show, sensor) %></span>
+          <span><%= live_patch "Edit", to: Routes.sensor_index_path(@socket, :edit, sensor) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: sensor.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Sensor", to: Routes.sensor_index_path(@socket, :new) %></span>

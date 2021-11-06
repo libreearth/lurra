@@ -1,0 +1,37 @@
+<h1>Show Sensor</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal LurraWeb.SensorLive.FormComponent,
+    id: @sensor.id,
+    title: @page_title,
+    action: @live_action,
+    sensor: @sensor,
+    return_to: Routes.sensor_show_path(@socket, :show, @sensor) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Value type:</strong>
+    <%= @sensor.value_type %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @sensor.name %>
+  </li>
+
+  <li>
+    <strong>Sensor type:</strong>
+    <%= @sensor.sensor_type %>
+  </li>
+
+  <li>
+    <strong>Unit:</strong>
+    <%= @sensor.unit %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.sensor_show_path(@socket, :edit, @sensor), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.sensor_index_path(@socket, :index) %></span>

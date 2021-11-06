@@ -31,6 +31,13 @@ defmodule LurraWeb.Router do
     live "/events/:id", EventLive.Show, :show
     live "/events/:id/show/edit", EventLive.Show, :edit
 
+    live "/sensors", SensorLive.Index, :index
+    live "/sensors/new", SensorLive.Index, :new
+    live "/sensors/:id/edit", SensorLive.Index, :edit
+
+    live "/sensors/:id", SensorLive.Show, :show
+    live "/sensors/:id/show/edit", SensorLive.Show, :edit
+
   end
 
   # Other scopes may use custom stacks.
