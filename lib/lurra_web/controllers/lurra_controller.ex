@@ -37,8 +37,13 @@ defmodule LurraWeb.LurraWebhookController do
     value_bin
   end
 
-  def read_binary_value(value_bin, "integer") do
+  def read_binary_value(value_bin, "int16") do
     <<0, 0, value::integer-signed-size(16)>> = value_bin
+    value
+  end
+
+  def read_binary_value(value_bin, "int32") do
+    <<0, 0, value::integer-signed-size(32)>> = value_bin
     value
   end
 
