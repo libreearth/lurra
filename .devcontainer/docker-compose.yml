@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    build:
+      dockerfile: Docker-elixir  
+      context: .
+    command: sleep infinity
+    container_name: vscode_remote_phoenix_up
+    ports:
+      - "4000:4000"
+    volumes:
+      # Mounts the project folder to '/workspace'. The target path inside the container
+      # should match should match what your application expects. In this case, the
+      # compose file is in a sub-folder, so we will mount '..'. We'll then reference this
+      # as the workspaceFolder in '.devcontainer/devcontainer.json' so VS Code starts here.
+      - ../:/workspace:cached
+
+      # This lets you avoid setting up Git again in the container
+      #- ~/.gitconfig:/root/.gitconfig
+    depends_on:
+      - db-postgis
+  db-postgis:
+    build:
+      dockerfile: Dockerfile-postgis12
+      context: .
+    container_name: vscode_remote_postgres_postgis
+    restart: always
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  
+volumes:
+  postgres-data:    

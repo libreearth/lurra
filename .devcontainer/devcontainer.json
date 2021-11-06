@@ -1,0 +1,12 @@
+{
+    "name": "Phoenix + Postgres",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "jakebecker.elixir-ls"
+    ]
+}
