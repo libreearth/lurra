@@ -54,12 +54,14 @@ config :lurra, LurraWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :lurra, LurraWeb.Endpoint,
+  reloadable_compilers: [:gettext, :elixir, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/lurra_web/(live|views)/.*(ex)$",
-      ~r"lib/lurra_web/templates/.*(eex)$"
+      ~r"lib/lurra_web/(live|views|components)/.*(ex|sface|js)$",
+      ~r"lib/lurra_web/templates/.*(eex)$",
+      ~r"priv/catalogue/.*(ex)$"
     ]
   ]
 

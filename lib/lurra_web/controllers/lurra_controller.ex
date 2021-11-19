@@ -1,6 +1,10 @@
 defmodule LurraWeb.LurraWebhookController do
   use LurraWeb, :controller
 
+  alias LurraWeb.Endpoint
+
+  @events_topic "events"
+
   def webhook(conn, %{ "uplink_message" => %{"frm_payload" => payload }} = params) do
     payload
     |> Base.decode64!()
@@ -14,6 +18,8 @@ defmodule LurraWeb.LurraWebhookController do
 
     case Lurra.Events.create_event(valid_attrs) do
       {:ok, event} ->
+        state = %{ payload: value, type: sensor.sensor_type}
+        LurraWeb.Endpoint.broadcast_from(self(), @events_topic, "event_created", state)
        nil
       error ->
        IO.inspect error

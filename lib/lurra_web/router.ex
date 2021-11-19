@@ -1,6 +1,8 @@
 defmodule LurraWeb.Router do
   use LurraWeb, :router
 
+  import Surface.Catalogue.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -37,6 +39,8 @@ defmodule LurraWeb.Router do
 
     live "/sensors/:id", SensorLive.Show, :show
     live "/sensors/:id/show/edit", SensorLive.Show, :edit
+    live "/demo", Demo
+    live "/dashboard", Dashboard
 
   end
 
@@ -72,6 +76,13 @@ defmodule LurraWeb.Router do
       pipe_through :browser
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
+  if Mix.env() == :dev do
+    scope "/" do
+      pipe_through :browser
+      surface_catalogue "/catalogue"
     end
   end
 end
