@@ -6,7 +6,7 @@ defmodule LurraWeb.EventLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :events, list_events())}
+    {:ok, assign(socket, :events, Lurra.Events.list_events_limit(50))}
   end
 
   @impl true

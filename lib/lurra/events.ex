@@ -21,6 +21,14 @@ defmodule Lurra.Events do
     Repo.all(Event)
   end
 
+  def list_events_limit(limit) do
+    query = from(e in Event, limit: ^limit, order_by: [desc: e.timestamp])
+    Repo.all(query)
+  end
+
+
+
+
   @doc """
   Gets a single event.
 
