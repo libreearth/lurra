@@ -26,9 +26,12 @@ defmodule LurraWeb.Dashboard do
 
   def render(assigns) do
     ~F"""
-    <div>
-      <WaterMeter id="water_meter" value={@value} subtitle="How are you?" color="info"/>
-      <EcoObserver id="water_temperature" bme_humidity={@bme_humidity} bme_pressure={@bme_pressure}  bme_temp={@bme_temp} temperature={@temperature} lat={@lat} long={@long} sats={@sats} subtitle="How are you?" color="info"/>
+    <div class="container">
+
+        <WaterMeter id="water_meter" value={@value} subtitle="How are you?" color="info"/>
+
+        <EcoObserver id="water_temperature" bme_humidity={@bme_humidity} bme_pressure={@bme_pressure}  bme_temp={@bme_temp} temperature={@temperature} lat={@lat} long={@long} sats={@sats} subtitle="How are you?" color="info"/>
+
     </div>
     """
   end

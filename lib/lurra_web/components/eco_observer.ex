@@ -26,6 +26,7 @@ defmodule LurraWeb.Components.EcoObserver do
 
   def render(assigns) do
     ~F"""
+
     <div class="air">
       <div class="temperature" style="">Out sensor temp: {@temperature}</div>
     </div>
