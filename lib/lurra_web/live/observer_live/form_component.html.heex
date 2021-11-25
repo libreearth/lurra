@@ -1,0 +1,39 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="observer-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+    <%= error_tag f, :name %>
+  
+    <%= label f, :device_id %>
+    <%= text_input f, :device_id %>
+    <%= error_tag f, :device_id %>
+
+    <%= label f, :sensors %>
+    <div>
+      <%= for tag <- @box_sensors do %>
+        <div> <%= tag.name %> <i class="fa fa-times-circle" phx-click="delete-sensor" phx-target={@myself} phx-value-sensor={tag.id}></i> </div>
+      <% end %>
+      <i class="fa fa-plus" phx-click="show-sensors-dialog" phx-target={@myself}></i>
+      <%= if @show_sensors_dialog do %>
+        <ul>
+          <%= for sensor <- @sensors do %>
+            <li phx-click="add-sensor" phx-target={@myself} phx-value-sensor={sensor.id}> <%= sensor.name %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>

@@ -11,14 +11,14 @@
 
 <ul>
 
-  <li>
-    <strong>Value type:</strong>
-    <%= @sensor.value_type %>
+<li>
+    <strong>Name:</strong>
+    <%= @sensor.name %>
   </li>
 
   <li>
-    <strong>Name:</strong>
-    <%= @sensor.name %>
+    <strong>Value type:</strong>
+    <%= @sensor.value_type %>
   </li>
 
   <li>
@@ -29,6 +29,21 @@
   <li>
     <strong>Unit:</strong>
     <%= @sensor.unit %>
+  </li>
+
+  <li>
+    <strong>Min value:</strong>
+    <%= @sensor.min_val %>
+  </li>
+
+  <li>
+    <strong>Max value:</strong>
+    <%= @sensor.max_val %>
+  </li>
+
+  <li>
+    <strong>Precision:</strong>
+    <%= @sensor.precision %>
   </li>
 
 </ul>

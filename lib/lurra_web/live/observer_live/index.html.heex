@@ -1,0 +1,37 @@
+<h1>Listing Observers</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal LurraWeb.ObserverLive.FormComponent,
+    id: @observer.id || :new,
+    title: @page_title,
+    action: @live_action,
+    observer: @observer,
+    return_to: Routes.observer_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Device ID</th>
+      <th>Sensors</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="observers">
+    <%= for observer <- @observers do %>
+      <tr id={"observer-#{observer.id}"}>
+        <td><%= observer.name %></td>
+        <td><%= observer.device_id %></td>
+        <td><%= observer.sensors |> Enum.map(& &1.name) |> Enum.join(", ") %></td>
+        <td>
+          <span><%= live_redirect "Show", to: Routes.observer_show_path(@socket, :show, observer) %></span>
+          <span><%= live_patch "Edit", to: Routes.observer_index_path(@socket, :edit, observer) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: observer.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Observer", to: Routes.observer_index_path(@socket, :new) %></span>

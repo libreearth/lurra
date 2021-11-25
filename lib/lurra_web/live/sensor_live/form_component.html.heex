@@ -8,14 +8,14 @@
     phx-target={@myself}
     phx-change="validate"
     phx-submit="save">
-  
-    <%= label f, :value_type %>
-    <%= text_input f, :value_type %>
-    <%= error_tag f, :value_type %>
-  
+
     <%= label f, :name %>
     <%= text_input f, :name %>
     <%= error_tag f, :name %>
+  
+    <%= label f, :value_type %>
+    <%= select f, :value_type, ["string", "int16", "int32", "float"] %>
+    <%= error_tag f, :value_type %>
   
     <%= label f, :sensor_type %>
     <%= number_input f, :sensor_type %>
@@ -24,6 +24,18 @@
     <%= label f, :unit %>
     <%= text_input f, :unit %>
     <%= error_tag f, :unit %>
+
+    <%= label f, :min_val %>
+    <%= number_input f, :min_val %>
+    <%= error_tag f, :min_val %>
+
+    <%= label f, :max_val %>
+    <%= number_input f, :max_val %>
+    <%= error_tag f, :max_val %>
+
+    <%= label f, :precision %>
+    <%= number_input f, :precision %>
+    <%= error_tag f, :precision %>
   
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>

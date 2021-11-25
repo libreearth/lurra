@@ -1,0 +1,33 @@
+.gr-data path {
+    fill: none;
+    stroke: blue;
+    stroke-width: 2px;
+}
+
+.graph-title {
+    display: flex;
+    flex-direction: row;
+}
+
+.graph-title h2 {
+    flex-grow: 2;
+    text-align: center;
+}
+
+.graph svg {
+    display: block;
+    margin: auto;
+}
+
+.graph form {
+   width: 150px;
+   display: block;
+   margin: auto;
+}
+
+.title-back {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+

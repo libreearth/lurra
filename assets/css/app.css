@@ -1,5 +1,6 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
+@import "./graph.css";
 
 /* Alerts and form errors used by phx.new */
 .alert {
@@ -105,3 +106,22 @@
   width: 100%;
   bottom: 0;
 }
+
+.logo {
+  width: 100px;
+  height: 100px;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.logo-container h1 {
+  flex-grow: 3;
+  margin: auto;
+  text-align: center;
+}
+
+
+

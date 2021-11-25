@@ -1,0 +1,13 @@
+<h2>{@observer.name}</h2>
+<ul>
+{#for sensor <- @observer.sensors}
+  <li>
+    {#if @readings[sensor.sensor_type]}
+        {sensor.name} = {format(@readings[sensor.sensor_type], sensor.precision)}{sensor.unit}
+    {#else}
+        {sensor.name} has no readings yet
+    {/if}
+    <Link label="Show graph" to={Routes.live_path(LurraWeb.Endpoint, LurraWeb.Graph, @observer.device_id, sensor.sensor_type)}/>
+  </li>
+{/for}
+</ul>

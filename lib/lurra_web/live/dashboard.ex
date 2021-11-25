@@ -1,7 +1,6 @@
 defmodule LurraWeb.Dashboard do
   use Surface.LiveView
 
-  alias LurraWeb.Components.WaterMeter
   alias LurraWeb.Components.EcoObserver
   alias LurraWeb.Endpoint
 
@@ -11,109 +10,46 @@ defmodule LurraWeb.Dashboard do
     if connected?(socket) do
       Endpoint.subscribe(@events_topic)
     end
+    observers = Lurra.Monitoring.list_observers()
     socket = socket
-    |> assign(:value, 0)
-    |> assign(:temperature, 0.0)
-    |> assign(:lat, 0.0)
-    |> assign(:long, 0.0)
-    |> assign(:sats, 0)
-    |> assign(:bme_temp, 0.0)
-    |> assign(:bme_pressure, 0.0)
-    |> assign(:bme_humidity, 0.0)
+    |> assign(:observers, observers)
+    |> assign(:readings, initial_readings(observers))
 
     {:ok, socket}
   end
 
-  def render(assigns) do
-    ~F"""
-    <div class="container">
-
-        <WaterMeter id="water_meter" value={@value} subtitle="How are you?" color="info"/>
-
-        <EcoObserver id="water_temperature" bme_humidity={@bme_humidity} bme_pressure={@bme_pressure}  bme_temp={@bme_temp} temperature={@temperature} lat={@lat} long={@long} sats={@sats} subtitle="How are you?" color="info"/>
-
-    </div>
-    """
+  def handle_info(%{event: "event_created", payload: %{ payload: payload, device_id: device_id, type: type}, topic: "events"}, socket) do
+    {
+      :noreply,
+      socket
+      |> assign(:readings, Map.put(socket.assigns.readings, {device_id, type}, payload))
+    }
   end
 
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 1}, topic: "events"} = event, socket) do
-    IO.puts "type 1 payload"
-    IO.inspect payload
-    LurraWeb.Components.WaterMeter.update_value("water_meter", value: payload)
-    {:noreply, assign(socket, :value, payload)}
+  def filter_device_readings(readings, device_id) do
+    readings
+    |> Enum.filter(fn {{dev_id, _type}, _payload} -> dev_id == device_id end)
+    |> Enum.map(fn {{_device, type}, payload} -> {type, payload} end)
+    |> Enum.into(%{})
   end
 
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 6}, topic: "events"} = event, socket) do
-    IO.puts "type 5 payload"
-    IO.inspect payload
-    temperature = payload
-    LurraWeb.Components.EcoObserver.update_value("water_temperature", temperature: temperature)
-    {:noreply, assign(socket, :temperature, temperature)}
+  def initial_readings(observers) do
+    for observer <- observers do
+      for sensor <- observer.sensors do
+        {{observer.device_id, sensor.sensor_type}, Lurra.Events.get_last_event(observer.device_id, sensor.sensor_type) |> payload()|> parse_float()}
+      end
+    end
+    |> List.flatten()
+    |> Enum.into(%{})
   end
 
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 7}, topic: "events"} = event, socket) do
-    IO.puts "type 7 payload"
-    IO.inspect payload
-    {value , _} = Float.parse(payload)
-    value = payload
-    LurraWeb.Components.EcoObserver.update_lat("water_temperature", lat: value)
-    {:noreply, assign(socket, :lat, value)}
+  defp payload(nil), do: nil
+  defp payload(event), do: event.payload
+
+
+  defp parse_float(text) do
+    {n, _} = Float.parse(text)
+    n
   end
 
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 8}, topic: "events"} = event, socket) do
-    IO.puts "type 8 payload"
-    IO.inspect payload
-    {value , _} = Float.parse(payload)
-    value = payload
-    LurraWeb.Components.EcoObserver.update_long("water_temperature", long: value)
-    {:noreply, assign(socket, :lat, value)}
-  end
-
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 2}, topic: "events"} = event, socket) do
-    IO.puts "type 2 payload"
-    IO.inspect payload
-    value = payload
-    LurraWeb.Components.EcoObserver.update_bme_temp("water_temperature", bme_temp: value)
-    {:noreply, assign(socket, :bme_temp, value)}
-  end
-
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 3}, topic: "events"} = event, socket) do
-    IO.puts "type 3 payload"
-    IO.inspect payload
-    value = payload
-    LurraWeb.Components.EcoObserver.update_bme_humidity("water_temperature", bme_humidity: value)
-    {:noreply, assign(socket, :bme_humidity, value)}
-  end
-
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 4}, topic: "events"} = event, socket) do
-    IO.puts "type 3 payload"
-    IO.inspect payload
-    value = payload
-    LurraWeb.Components.EcoObserver.update_bme_pressure("water_temperature", bme_pressure: value)
-    {:noreply, assign(socket, :bme_pressure, value)}
-  end
-
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, type: 9}, topic: "events"} = event, socket) do
-    IO.puts "type  9 payload"
-    IO.inspect payload
-    value = String.to_integer(payload)
-    LurraWeb.Components.EcoObserver.update_sats("water_temperature", sats: value)
-    {:noreply, assign(socket, :sats, value)}
-  end
-
-
-
-
-  # def handle_info(%{
-  #   event: "event_created",
-  #   payload: %{payload: payload, type: type},
-  #   topic: "events"
-  # } = event, socket) do
-  #   IO.puts "handle event"
-  #   IO.inspect payload
-  #   IO.inspect type
-  #   #send_update(SurveyResultsLive,id: socket.assigns.survey_results_component_id)
-
-  #   {:noreply, socket}
-  # end
 end

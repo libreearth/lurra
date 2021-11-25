@@ -1,0 +1,27 @@
+<h1>Show Observer</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal LurraWeb.ObserverLive.FormComponent,
+    id: @observer.id,
+    title: @page_title,
+    action: @live_action,
+    observer: @observer,
+    return_to: Routes.observer_show_path(@socket, :show, @observer) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @observer.name %>
+  </li>
+
+  <li>
+    <strong>Device:</strong>
+    <%= @observer.device_id %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.observer_show_path(@socket, :edit, @observer), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.observer_index_path(@socket, :index) %></span>

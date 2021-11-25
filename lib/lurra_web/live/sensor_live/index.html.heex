@@ -1,4 +1,4 @@
-<h1>Listing Sensors</h1>
+<h2>Sensors</h2>
 
 <%= if @live_action in [:new, :edit] do %>
   <%= live_modal LurraWeb.SensorLive.FormComponent,
@@ -12,8 +12,8 @@
 <table>
   <thead>
     <tr>
-      <th>Value type</th>
       <th>Name</th>
+      <th>Value type</th>
       <th>Sensor type</th>
       <th>Unit</th>
 
@@ -23,8 +23,8 @@
   <tbody id="sensors">
     <%= for sensor <- @sensors do %>
       <tr id={"sensor-#{sensor.id}"}>
-        <td><%= sensor.value_type %></td>
         <td><%= sensor.name %></td>
+        <td><%= sensor.value_type %></td>
         <td><%= sensor.sensor_type %></td>
         <td><%= sensor.unit %></td>
 

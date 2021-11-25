@@ -20,4 +20,19 @@ defmodule Lurra.MonitoringFixtures do
 
     sensor
   end
+
+  @doc """
+  Generate a observer.
+  """
+  def observer_fixture(attrs \\ %{}) do
+    {:ok, observer} =
+      attrs
+      |> Enum.into(%{
+        device_id: "some device_id",
+        name: "some name"
+      })
+      |> Lurra.Monitoring.create_observer()
+
+    observer
+  end
 end

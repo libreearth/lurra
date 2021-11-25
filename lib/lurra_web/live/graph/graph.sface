@@ -1,0 +1,17 @@
+<div class="container graph">
+    <div class="title-back"><Link label="Back" to={Routes.live_path(LurraWeb.Endpoint, LurraWeb.Dashboard)}/></div>
+    <div class="graph-title">
+        <h2>{@observer.name} - {@sensor.name} </h2> 
+    </div>
+    <div class="container">
+        <div class="column">
+        <Form for={:time} change="time-change">
+            <Field name="time_window">
+                <Label/><Select options={[{"60 minutes", 60*60000}, {"120 minutes", 120*60000}, {"12 hours", 12*60*60000}, {"24 hours", 24*60*60000}, {"48 hours", 48*60*60000}, {"72 hours", 72*60*60000}]} />
+            </Field>
+        </Form>
+        </div>
+    
+        <svg id="chart" :hook="Chart" data-minval={@sensor.min_val} data-maxval={@sensor.max_val} data-unit={@sensor.unit}></svg>
+    </div>
+</div>

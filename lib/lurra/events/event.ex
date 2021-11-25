@@ -3,18 +3,16 @@ defmodule Lurra.Events.Event do
   import Ecto.Changeset
 
   schema "events" do
-    field :h3id, :string
-    field :payload, :string
-    field :timestamp, :utc_datetime
+    field :device_id, :string
     field :type, :string
-
-    timestamps()
+    field :payload, :string
+    field :timestamp, :integer
   end
 
   @doc false
   def changeset(event, attrs) do
     event
-    |> cast(attrs, [:h3id, :timestamp, :payload, :type])
+    |> cast(attrs, [:device_id, :timestamp, :payload, :type])
     #|> validate_required([:h3id, :timestamp, :payload, :type])
   end
 end

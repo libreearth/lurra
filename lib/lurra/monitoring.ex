@@ -105,4 +105,118 @@ defmodule Lurra.Monitoring do
   def change_sensor(%Sensor{} = sensor, attrs \\ %{}) do
     Sensor.changeset(sensor, attrs)
   end
+
+  alias Lurra.Monitoring.Observer
+
+  @doc """
+  Returns the list of observers.
+
+  ## Examples
+
+      iex> list_observers()
+      [%Observer{}, ...]
+
+  """
+  def list_observers do
+    Repo.all(Observer)
+    |> Enum.map(fn observer -> Repo.preload(observer, :sensors) end)
+  end
+
+  @doc """
+  Gets a single observer.
+
+  Raises `Ecto.NoResultsError` if the Observer does not exist.
+
+  ## Examples
+
+      iex> get_observer!(123)
+      %Observer{}
+
+      iex> get_observer!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_observer!(id), do: Repo.get!(Observer, id) |> Repo.preload(:sensors)
+
+  def get_observer_by_device_id(device_id), do: Repo.get_by!(Observer, device_id: device_id)
+
+  @doc """
+  Creates a observer.
+
+  ## Examples
+
+      iex> create_observer(%{field: value})
+      {:ok, %Observer{}}
+
+      iex> create_observer(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_observer(attrs \\ %{}) do
+    %Observer{}
+    |> Observer.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_observer(sensors, attrs) do
+    %Observer{}
+    |> Observer.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:sensors, sensors)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a observer.
+
+  ## Examples
+
+      iex> update_observer(observer, %{field: new_value})
+      {:ok, %Observer{}}
+
+      iex> update_observer(observer, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_observer(%Observer{} = observer, attrs) do
+    observer
+    |> Observer.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_observer(sensors, %Observer{} = observer, attrs) do
+    observer
+    |> Observer.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:sensors, sensors)
+    |> IO.inspect
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a observer.
+
+  ## Examples
+
+      iex> delete_observer(observer)
+      {:ok, %Observer{}}
+
+      iex> delete_observer(observer)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_observer(%Observer{} = observer) do
+    Repo.delete(observer)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking observer changes.
+
+  ## Examples
+
+      iex> change_observer(observer)
+      %Ecto.Changeset{data: %Observer{}}
+
+  """
+  def change_observer(%Observer{} = observer, attrs \\ %{}) do
+    Observer.changeset(observer, attrs)
+  end
 end

@@ -21,12 +21,29 @@ defmodule Lurra.Events do
     Repo.all(Event)
   end
 
+  def list_events(device_id, sensor_type, from_time, to_time) do
+    query = from(e in Event, where: e.timestamp > ^from_time and e.timestamp < ^to_time and e.device_id == ^device_id and e.type == ^sensor_type, order_by: [asc: e.timestamp])
+    Repo.all(query)
+  end
+
   def list_events_limit(limit) do
     query = from(e in Event, limit: ^limit, order_by: [desc: e.timestamp])
     Repo.all(query)
   end
 
 
+
+  def get_last_event(device_id, sensor_type) do
+    st = "#{sensor_type}"
+    query = from(
+      e in Event,
+      where: e.device_id == ^device_id and e.type == ^st,
+      order_by: [desc: e.timestamp],
+      limit: 1
+    )
+    Repo.all(query)
+    |> List.first()
+  end
 
 
   @doc """

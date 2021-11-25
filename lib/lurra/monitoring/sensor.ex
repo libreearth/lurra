@@ -7,6 +7,9 @@ defmodule Lurra.Monitoring.Sensor do
     field :sensor_type, :integer
     field :unit, :string
     field :value_type, :string
+    field :min_val, :float
+    field :max_val, :float
+    field :precision, :integer
 
     timestamps()
   end
@@ -14,7 +17,7 @@ defmodule Lurra.Monitoring.Sensor do
   @doc false
   def changeset(sensor, attrs) do
     sensor
-    |> cast(attrs, [:value_type, :name, :sensor_type, :unit])
+    |> cast(attrs, [:value_type, :name, :sensor_type, :unit, :min_val, :max_val, :precision])
     |> validate_required([:value_type, :name, :sensor_type, :unit])
   end
 end

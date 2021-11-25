@@ -1,0 +1,5 @@
+<div class="container"> 
+  {#for box <- @observers}
+    <EcoObserver observer={box} readings={filter_device_readings(@readings, box.device_id)}/>
+  {/for}    
+</div>

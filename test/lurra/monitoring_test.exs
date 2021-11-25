@@ -62,4 +62,60 @@ defmodule Lurra.MonitoringTest do
       assert %Ecto.Changeset{} = Monitoring.change_sensor(sensor)
     end
   end
+
+  describe "observers" do
+    alias Lurra.Monitoring.Observer
+
+    import Lurra.MonitoringFixtures
+
+    @invalid_attrs %{device_id: nil, name: nil}
+
+    test "list_observers/0 returns all observers" do
+      observer = observer_fixture()
+      assert Monitoring.list_observers() == [observer]
+    end
+
+    test "get_observer!/1 returns the observer with given id" do
+      observer = observer_fixture()
+      assert Monitoring.get_observer!(observer.id) == observer
+    end
+
+    test "create_observer/1 with valid data creates a observer" do
+      valid_attrs = %{device_id: "some device_id", name: "some name"}
+
+      assert {:ok, %Observer{} = observer} = Monitoring.create_observer(valid_attrs)
+      assert observer.device_id == "some device_id"
+      assert observer.name == "some name"
+    end
+
+    test "create_observer/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Monitoring.create_observer(@invalid_attrs)
+    end
+
+    test "update_observer/2 with valid data updates the observer" do
+      observer = observer_fixture()
+      update_attrs = %{device_id: "some updated device_id", name: "some updated name"}
+
+      assert {:ok, %Observer{} = observer} = Monitoring.update_observer(observer, update_attrs)
+      assert observer.device_id == "some updated device_id"
+      assert observer.name == "some updated name"
+    end
+
+    test "update_observer/2 with invalid data returns error changeset" do
+      observer = observer_fixture()
+      assert {:error, %Ecto.Changeset{}} = Monitoring.update_observer(observer, @invalid_attrs)
+      assert observer == Monitoring.get_observer!(observer.id)
+    end
+
+    test "delete_observer/1 deletes the observer" do
+      observer = observer_fixture()
+      assert {:ok, %Observer{}} = Monitoring.delete_observer(observer)
+      assert_raise Ecto.NoResultsError, fn -> Monitoring.get_observer!(observer.id) end
+    end
+
+    test "change_observer/1 returns a observer changeset" do
+      observer = observer_fixture()
+      assert %Ecto.Changeset{} = Monitoring.change_observer(observer)
+    end
+  end
 end

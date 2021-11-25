@@ -1,6 +1,8 @@
 defmodule LurraWeb.Router do
   use LurraWeb, :router
 
+  import LurraWeb.UserAuth
+
   import Surface.Catalogue.Router
 
   pipeline :browser do
@@ -10,6 +12,7 @@ defmodule LurraWeb.Router do
     plug :put_root_layout, {LurraWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
 
     plug Plug.Parsers,
       parsers: [:urlencoded, :multipart, :json],
@@ -25,22 +28,6 @@ defmodule LurraWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-
-    live "/events", EventLive.Index, :index
-    live "/events/new", EventLive.Index, :new
-    live "/events/:id/edit", EventLive.Index, :edit
-
-    live "/events/:id", EventLive.Show, :show
-    live "/events/:id/show/edit", EventLive.Show, :edit
-
-    live "/sensors", SensorLive.Index, :index
-    live "/sensors/new", SensorLive.Index, :new
-    live "/sensors/:id/edit", SensorLive.Index, :edit
-
-    live "/sensors/:id", SensorLive.Show, :show
-    live "/sensors/:id/show/edit", SensorLive.Show, :edit
-    live "/demo", Demo
-    live "/dashboard", Dashboard
 
   end
 
@@ -84,5 +71,58 @@ defmodule LurraWeb.Router do
       pipe_through :browser
       surface_catalogue "/catalogue"
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", LurraWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", LurraWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    live "/events", EventLive.Index, :index
+
+    live "/sensors", SensorLive.Index, :index
+    live "/sensors/new", SensorLive.Index, :new
+    live "/sensors/:id/edit", SensorLive.Index, :edit
+    live "/sensors/:id", SensorLive.Show, :show
+    live "/sensors/:id/show/edit", SensorLive.Show, :edit
+
+    live "/dashboard", Dashboard
+
+    live "/observers", ObserverLive.Index, :index
+    live "/observers/new", ObserverLive.Index, :new
+    live "/observers/:id/edit", ObserverLive.Index, :edit
+
+    live "/observers/:id", ObserverLive.Show, :show
+    live "/observers/:id/show/edit", ObserverLive.Show, :edit
+
+    live "/graph/:device_id/:sensor_type", Graph
+
+  end
+
+  scope "/", LurraWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 end

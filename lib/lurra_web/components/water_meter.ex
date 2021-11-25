@@ -4,8 +4,6 @@ defmodule LurraWeb.Components.WaterMeter do
   """
   use Surface.Component
 
-  import LurraWeb.Gettext
-
   @doc "Water pressure value mm"
   prop value, :integer
 
