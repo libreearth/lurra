@@ -13,7 +13,7 @@ defmodule LurraWeb.Dashboard do
     observers = Lurra.Monitoring.list_observers()
     socket = socket
     |> assign(:observers, observers)
-    |> assign(:readings, initial_readings(observers))
+    |> assign(:readings, initial_readings())
 
     {:ok, socket}
   end
@@ -33,23 +33,31 @@ defmodule LurraWeb.Dashboard do
     |> Enum.into(%{})
   end
 
-  def initial_readings(observers) do
-    for observer <- observers do
-      for sensor <- observer.sensors do
-        {{observer.device_id, sensor.sensor_type}, Lurra.Events.get_last_event(observer.device_id, sensor.sensor_type) |> payload()|> parse_float()}
-      end
-    end
-    |> List.flatten()
-    |> Enum.into(%{})
-  end
-
   defp payload(nil), do: nil
   defp payload(event), do: event.payload
 
+  defp parse_float(nil) do
+    nil
+  end
 
   defp parse_float(text) do
     {n, _} = Float.parse(text)
     n
   end
 
+  defp parse_int(nil) do
+    nil
+  end
+
+  defp parse_int(text) do
+    {n, _} = Integer.parse(text)
+    n
+  end
+
+  def initial_readings() do
+    Lurra.Events.get_last_events()
+    |> Enum.map(fn reading -> {{reading.device_id, parse_int(reading.type)}, reading |> payload() |> parse_float()} end)
+    |> Enum.into(%{})
+    |> IO.inspect
+  end
 end

@@ -45,6 +45,20 @@ defmodule Lurra.Events do
     |> List.first()
   end
 
+  def get_last_events() do
+    lasts = from(
+      e in Event,
+      select: max(e.id),
+      group_by: [e.device_id, e.type]
+    )
+
+    query = from(
+      e in Event,
+      where: e.id in subquery(lasts)
+    )
+    Repo.all(query)
+  end
+
 
   @doc """
   Gets a single event.
