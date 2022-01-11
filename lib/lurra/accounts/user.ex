@@ -7,6 +7,7 @@ defmodule Lurra.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :role, :string
 
     timestamps()
   end
@@ -136,5 +137,10 @@ defmodule Lurra.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :role, :confirmed_at])
   end
 end

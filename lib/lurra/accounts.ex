@@ -10,6 +10,70 @@ defmodule Lurra.Accounts do
 
   ## Database getters
 
+  def list_users_limit(limit) do
+    query = from(e in User, limit: ^limit, order_by: [desc: e.id])
+    Repo.all(query)
+  end
+
+  def list_users() do
+    query = from(e in User, order_by: [desc: e.id])
+    Repo.all(query)
+  end
+
+  def count_users() do
+    query = from(e in User, select: count())
+    Repo.one(query)
+  end
+
+  @doc """
+  Deletes a user.
+
+  ## Examples
+
+      iex> delete_user(user)
+      {:ok, %User{}}
+
+      iex> delete_user(user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
+
+  ## Examples
+
+      iex> change_user(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
+  end
+
+  @doc """
+  Updates a user.
+
+  ## Examples
+
+      iex> update_user(user, %{field: new_value})
+      {:ok, %User{}}
+
+      iex> update_user(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
+
+
   @doc """
   Gets a user by email.
 
@@ -75,9 +139,18 @@ defmodule Lurra.Accounts do
 
   """
   def register_user(attrs) do
-    %User{}
+    %User{role: new_user_role()}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  defp new_user_role() do
+    n_users = count_users()
+    if n_users == 0 do
+      "admin"
+    else
+      "regular"
+    end
   end
 
   @doc """
@@ -270,13 +343,10 @@ defmodule Lurra.Accounts do
   If the token matches, the user account is marked as confirmed
   and the token is deleted.
   """
-  def confirm_user(token) do
-    with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
-         %User{} = user <- Repo.one(query),
-         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)) do
-      {:ok, user}
-    else
-      _ -> :error
+  def confirm_user(%User{} = user) do
+    case Repo.transaction(confirm_user_multi(user)) do
+         {:ok, %{user: user}} -> {:ok, user}
+         _ -> {:error}
     end
   end
 
