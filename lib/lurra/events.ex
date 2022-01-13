@@ -31,7 +31,10 @@ defmodule Lurra.Events do
     Repo.all(query)
   end
 
-
+  def stream_events(device_id, sensor_type, from_time, to_time) do
+    query = from(e in Event, where: e.timestamp > ^from_time and e.timestamp < ^to_time and e.device_id == ^device_id and e.type == ^sensor_type, order_by: [asc: e.timestamp])
+    Repo.stream(query)
+  end
 
   def get_last_event(device_id, sensor_type) do
     st = "#{sensor_type}"

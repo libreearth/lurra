@@ -26,11 +26,11 @@
         <td><%= user.email %></td>
         <td><%= user.role %></td>
         <td><%= user.confirmed_at %></td>
-        <th>
+        <td>
             <span><%= live_patch "Edit", to: Routes.user_index_path(@socket, :edit, user) %></span>
             <span><%= link "Confirm", to: "#", phx_click: "confirm", phx_value_id: user.id %></span>
             <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: user.id, data: [confirm: "Are you sure?"] %></span>
-        </th>
+        </td>
       </tr>
     <% end %>
   </tbody>

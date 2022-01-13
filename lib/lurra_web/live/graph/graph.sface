@@ -4,14 +4,19 @@
         <h2>{@observer.name} - {@sensor.name} </h2> 
     </div>
     <div class="container">
-        <div class="column">
-        <Form for={:time} change="time-change">
-            <Field name="time_window">
-                <Label/><Select options={[{"60 minutes", 60*60000}, {"120 minutes", 120*60000}, {"12 hours", 12*60*60000}, {"24 hours", 24*60*60000}, {"48 hours", 48*60*60000}, {"72 hours", 72*60*60000}]} />
-            </Field>
-        </Form>
+        <div class="column centered-text">
+            <Form for={:time} change="time-change">
+                <Field name="time_window">
+                    <Label/><Select options={@time_options} />
+                </Field>
+            </Form>
         </div>
-    
         <svg id="chart" :hook="Chart" data-minval={@sensor.min_val} data-maxval={@sensor.max_val} data-unit={@sensor.unit}></svg>
     </div>
+    <div class="centered-text">
+        <a :on-click="show-download-dialog" class="hand-cursor">Download data</a>
+    </div>
 </div>
+<Dialog title="Download data" show={@show_download_dialog} hideEvent="close-download-dialog">
+    <DownloadData id="download-data" time={@time} timezone={@timezone} device_id={@observer.device_id} sensor_type={@sensor.sensor_type}/>
+</Dialog>

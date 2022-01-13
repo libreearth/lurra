@@ -123,5 +123,16 @@
   text-align: center;
 }
 
+.centered-text {
+  text-align: center;
+}
+
+.long-field {
+  width: 300px;
+}
+
+.hand-cursor {
+  cursor: pointer;
+}
 
 

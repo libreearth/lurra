@@ -1,0 +1,14 @@
+<div>
+  <Form for={:dates} change="change" class="long-field">
+    <Field name={:from}>
+      <Label>From</Label>
+      <DateTimeLocalInput value={@from}/>
+    </Field>
+    <Field name={:to}>
+      <Label>To</Label>
+      <DateTimeLocalInput value={@to}/>
+    </Field>
+
+    <Link label="Download data in CSV" to={@download_url}/>
+  </Form>
+</div>

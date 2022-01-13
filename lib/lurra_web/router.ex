@@ -95,6 +95,8 @@ defmodule LurraWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
 
+    get "/data/:device_id/:sensor_type", DownloadDataController, :index
+
     live "/events", EventLive.Index, :index
 
     live "/dashboard", Dashboard

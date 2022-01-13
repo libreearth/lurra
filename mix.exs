@@ -53,7 +53,9 @@ defmodule Lurra.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:surface, "~> 0.6.0"},
       {:surface_formatter, "~> 0.6.0"},
-      {:surface_catalogue, "~> 0.2.0"}
+      {:surface_catalogue, "~> 0.2.0"},
+      {:timex, "~> 3.7.6"},
+      {:csv, "~> 2.3.1"}
     ]
   end
 
