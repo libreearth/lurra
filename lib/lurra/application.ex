@@ -15,9 +15,10 @@ defmodule Lurra.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Lurra.PubSub},
       # Start the Endpoint (http/https)
-      LurraWeb.Endpoint
+      LurraWeb.Endpoint,
       # Start a worker by calling: Lurra.Worker.start_link(arg)
       # {Lurra.Worker, arg}
+      LurraWeb.TwcQueryer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

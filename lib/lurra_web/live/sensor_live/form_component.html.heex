@@ -36,6 +36,10 @@
     <%= label f, :precision %>
     <%= number_input f, :precision %>
     <%= error_tag f, :precision %>
+
+    <%= label f, :field_name %>
+    <%= text_input f, :field_name %>
+    <%= error_tag f, :field_name %>
   
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>

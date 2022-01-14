@@ -46,6 +46,11 @@
     <%= @sensor.precision %>
   </li>
 
+  <li>
+    <strong>Field name:</strong>
+    <%= @sensor.field_name %>
+  </li>
+
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.sensor_show_path(@socket, :edit, @sensor), class: "button" %></span> |

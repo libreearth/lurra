@@ -12,8 +12,6 @@ defmodule LurraWeb.DownloadDataController do
       |> send_chunked(:ok)
 
     Lurra.Repo.transaction(fn ->
-
-
       create_csv_stream(device_id, sensor_type, from_time, to_time, timezone)
       |> Enum.reduce_while(ch_conn, fn chunk, conn ->
         case Plug.Conn.chunk(conn, chunk) do
@@ -46,7 +44,7 @@ defmodule LurraWeb.DownloadDataController do
       |> Stream.map(fn m ->
         [
           format_date(m.timestamp, timezone),
-          String.to_float(m.payload)
+          Float.parse(m.payload) |> elem(0)
         ]
       end)
       |> CSV.encode(separator: ?;, delimiter: "\n")

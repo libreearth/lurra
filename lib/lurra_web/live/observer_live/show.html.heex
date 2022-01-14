@@ -21,6 +21,16 @@
     <%= @observer.device_id %>
   </li>
 
+  <li>
+    <strong>Api:</strong>
+    <%= @observer.api_key %>
+  </li>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @observer.type %>
+  </li>
+
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.observer_show_path(@socket, :edit, @observer), class: "button" %></span> |

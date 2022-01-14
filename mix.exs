@@ -55,7 +55,8 @@ defmodule Lurra.MixProject do
       {:surface_formatter, "~> 0.6.0"},
       {:surface_catalogue, "~> 0.2.0"},
       {:timex, "~> 3.7.6"},
-      {:csv, "~> 2.3.1"}
+      {:csv, "~> 2.3.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 

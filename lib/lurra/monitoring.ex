@@ -140,6 +140,11 @@ defmodule Lurra.Monitoring do
 
   def get_observer_by_device_id(device_id), do: Repo.get_by!(Observer, device_id: device_id)
 
+  def list_observers_by_type(type) do
+    Repo.all(from c in Observer, where: c.type == ^type)
+    |> Enum.map(fn observer -> Repo.preload(observer, :sensors) end)
+  end
+
   @doc """
   Creates a observer.
 
@@ -187,7 +192,6 @@ defmodule Lurra.Monitoring do
     observer
     |> Observer.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:sensors, sensors)
-    |> IO.inspect
     |> Repo.update()
   end
 

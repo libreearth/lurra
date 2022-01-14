@@ -8,6 +8,8 @@ defmodule Lurra.Events do
 
   alias Lurra.Events.Event
 
+  @events_topic "events"
+
   @doc """
   Returns the list of events.
 
@@ -95,6 +97,20 @@ defmodule Lurra.Events do
     %Event{}
     |> Event.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_event_and_broadcast(value, device_id, sensor, epoch \\ :erlang.system_time(:millisecond)) do
+    valid_attrs = %{payload: "#{value}", timestamp: epoch, device_id: device_id, type: "#{sensor.sensor_type}"}
+
+    case Lurra.Events.create_event(valid_attrs) do
+      {:ok, _event} ->
+        state = %{ payload: value, device_id: device_id, type: sensor.sensor_type}
+        LurraWeb.Endpoint.broadcast_from(self(), @events_topic, "event_created", state)
+       nil
+      error ->
+       IO.inspect error
+       nil
+     end
   end
 
   @doc """

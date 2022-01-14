@@ -17,6 +17,14 @@
     <%= text_input f, :device_id %>
     <%= error_tag f, :device_id %>
 
+    <%= label f, :type %>
+    <%= select f, :type, @types %>
+    <%= error_tag f, :type %>
+
+    <%= label f, :api_key %>
+    <%= text_input f, :api_key %>
+    <%= error_tag f, :api_key %>
+
     <%= label f, :sensors %>
     <div>
       <%= for tag <- @box_sensors do %>
