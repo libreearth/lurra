@@ -24,25 +24,38 @@ defmodule LurraWeb.TwcQueryer do
   defp gather_info() do
     observers = Monitoring.list_observers_by_type("weather.com")
     for observer <- observers do
-      case request_weather_com(observer.device_id, observer.api_key) do
-        {:ok, info} ->
-          info = info["observations"] |> List.first()
-          epoch = info["epoch"] * 1000
-          for sensor <- observer.sensors do
-              get_sensor_value(info, sensor, observer.device_id, epoch)
-              |> send()
-          end
-        _ ->
-          nil
-      end
+      spawn( fn ->
+        case request_weather_com(observer.device_id, observer.api_key) do
+          {:ok, info} ->
+            send_info(observer, info)
+          _ ->
+            nil
+        end
+      end)
     end
 
+  end
+
+  defp send_info(observer, %{"observations" => [%{"epoch" => epoch_secs} = info|_]}) do
+    epoch = epoch_secs * 1000
+    for sensor <- observer.sensors do
+      get_sensor_value(info, sensor, observer.device_id, epoch)
+      |> send()
+    end
+  end
+
+  defp send_info(_observer, _info) do
+    nil
   end
 
   defp request_weather_com(device_id, api_key) do
     with {:ok, request} <- HTTPoison.get("https://api.weather.com/v2/pws/observations/current?stationId=#{device_id}&format=json&units=m&apiKey=#{api_key}&numericPrecision=decimal"),
          {:ok, req_map} <- Jason.decode(request.body) do
       {:ok, req_map}
+    else
+      error ->
+        IO.inspect error
+        error
     end
   end
 
