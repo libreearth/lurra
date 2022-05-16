@@ -160,6 +160,11 @@
   font-size: small;
 }
 
+.dashboard .observer li a {
+  float: right;
+  margin-right: 16px;
+}
+
 .dashboard .observer li {
   margin-bottom: 0px;
 }
