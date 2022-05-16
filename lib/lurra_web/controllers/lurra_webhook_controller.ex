@@ -4,6 +4,8 @@ defmodule LurraWeb.LurraWebhookController do
   alias Lurra.Monitoring
   alias Lurra.Events
 
+  plug LurraWeb.PushTokenPlug
+
   def webhook(conn, %{ "uplink_message" => %{"frm_payload" => payload }, "end_device_ids" => %{ "device_id" => device_id }} ) do
     payload
     |> Base.decode64!()
