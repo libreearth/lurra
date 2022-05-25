@@ -138,6 +138,8 @@ defmodule Lurra.Monitoring do
   """
   def get_observer!(id), do: Repo.get!(Observer, id) |> Repo.preload(:sensors)
 
+  def get_observer_no_preload!(id), do: Repo.get!(Observer, id)
+
   def get_observer_by_device_id(device_id), do: Repo.get_by!(Observer, device_id: device_id)
 
   def list_observers_by_type(type) do

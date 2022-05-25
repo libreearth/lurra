@@ -96,6 +96,7 @@ defmodule LurraWeb.Router do
     put "/users/settings", UserSettingsController, :update
 
     get "/data/:device_id/:sensor_type", DownloadDataController, :index
+    get "/multiple_data", DownloadMultipleDataController, :index
 
     live "/events", EventLive.Index, :index
 

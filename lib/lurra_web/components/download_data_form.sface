@@ -1,0 +1,22 @@
+  <Form for={:download} change="change" opts={autocomplete: "off"}>
+    <div class="download-data-form">
+      <Field name={:from}>
+        <Label>From</Label>
+        <DateTimeLocalInput value={@from}/>
+      </Field>
+      <Field name={:to}>
+        <Label>To</Label>
+        <DateTimeLocalInput value={@to}/>
+      </Field>
+      <Field name={:interval}>
+        <Label>Interval step (seconds)</Label>
+          <NumberInput value={@interval}/>
+      </Field>
+      <Link to={@download_url}><i class="fa fa-download"/> Download CSV</Link>
+    </div>
+    <div class="container dashboard"> 
+      {#for box <- @observers}
+        <EcoObserver show_checks={true} sensors_checked={@sensors} observer={box} readings={filter_device_readings(@readings, box.device_id)}/>
+      {/for}    
+    </div>
+  </Form>

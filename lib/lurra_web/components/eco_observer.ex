@@ -7,9 +7,12 @@ defmodule LurraWeb.Components.EcoObserver do
 
   alias Surface.Components.Link
   alias LurraWeb.Router.Helpers, as: Routes
+  alias Surface.Components.Form.Checkbox
 
   prop observer, :struct, required: true
   prop readings, :map, required: true
+  prop show_checks, :boolean, required: true
+  prop sensors_checked, :list, required: false, default: []
 
   def format(input, _decimals) when is_binary(input) do
     input
