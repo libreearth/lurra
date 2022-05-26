@@ -73,8 +73,9 @@ defmodule LurraWeb.Dashboard do
   end
 
   def initial_readings() do
-    Lurra.Events.get_last_events()
-    |> Enum.map(fn reading -> {{reading.device_id, parse_int(reading.type)}, reading |> payload() |> parse_float()} end)
-    |> Enum.into(%{})
+    # Lurra.Events.get_last_events()
+    # |> Enum.map(fn reading -> {{reading.device_id, parse_int(reading.type)}, reading |> payload() |> parse_float()} end)
+    # |> Enum.into(%{})
+    Lurra.Events.ReadingsCache.get_readings()
   end
 end
