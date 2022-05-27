@@ -51,31 +51,7 @@ defmodule LurraWeb.Dashboard do
     assign(socket, timezone: timezone)
   end
 
-  defp payload(nil), do: nil
-  defp payload(event), do: event.payload
-
-  defp parse_float(nil) do
-    nil
-  end
-
-  defp parse_float(text) do
-    {n, _} = Float.parse(text)
-    n
-  end
-
-  defp parse_int(nil) do
-    nil
-  end
-
-  defp parse_int(text) do
-    {n, _} = Integer.parse(text)
-    n
-  end
-
   def initial_readings() do
-    # Lurra.Events.get_last_events()
-    # |> Enum.map(fn reading -> {{reading.device_id, parse_int(reading.type)}, reading |> payload() |> parse_float()} end)
-    # |> Enum.into(%{})
     Lurra.Events.ReadingsCache.get_readings()
   end
 end

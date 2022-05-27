@@ -74,7 +74,7 @@ defmodule LurraWeb.Components.DownloadDataForm do
   end
 
   defp build_url(sensors, from, to, interval, timezone) do
-    Routes.download_multiple_data_path(LurraWeb.Endpoint, :index, interval: interval, sensors: sensors |> Enum.map(& String.replace(&1, "sensor-", "")) |> Enum.join(","), from: DateTime.to_unix(from, :milliseconds), to: DateTime.to_unix(to, :milliseconds), timezone: timezone)
+    Routes.download_multiple_data_path(LurraWeb.Endpoint, :index, interval: interval, sensors: sensors |> Enum.map(& String.replace(&1, "sensor-", "")) |> Enum.join(","), from: DateTime.to_unix(from, :millisecond), to: DateTime.to_unix(to, :millisecond), timezone: timezone)
   end
 
 end
