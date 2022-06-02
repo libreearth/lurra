@@ -1,0 +1,46 @@
+<h1>Show Trigger</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.trigger_show_path(@socket, :show, @trigger)}>
+    <.live_component
+      module={LurraWeb.TriggerLive.FormComponent}
+      id={@trigger.id}
+      title={@page_title}
+      action={@live_action}
+      trigger={@trigger}
+      return_to={Routes.trigger_show_path(@socket, :show, @trigger)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @trigger.name %>
+  </li>
+
+  <li>
+    <strong>Device:</strong>
+    <%= @trigger.device_id %>
+  </li>
+
+  <li>
+    <strong>Sensor type:</strong>
+    <%= @trigger.sensor_type %>
+  </li>
+
+  <li>
+    <strong>Rule:</strong>
+    <%= @trigger.rule %>
+  </li>
+
+  <li>
+    <strong>Actions:</strong>
+    <%= @trigger.actions %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.trigger_show_path(@socket, :edit, @trigger), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.trigger_index_path(@socket, :index) %></span>

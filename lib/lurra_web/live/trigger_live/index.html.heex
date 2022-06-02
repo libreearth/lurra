@@ -1,0 +1,47 @@
+<h1>Listing Triggers</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.trigger_index_path(@socket, :index)}>
+    <.live_component
+      module={LurraWeb.TriggerLive.FormComponent}
+      id={@trigger.id || :new}
+      title={@page_title}
+      action={@live_action}
+      trigger={@trigger}
+      return_to={Routes.trigger_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Device</th>
+      <th>Sensor type</th>
+      <th>Rule</th>
+      <th>Actions</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="triggers">
+    <%= for trigger <- @triggers do %>
+      <tr id={"trigger-#{trigger.id}"}>
+        <td><%= trigger.name %></td>
+        <td><%= Monitoring.get_observer_by_device_id(trigger.device_id).name %></td>
+        <td><%= Monitoring.get_sensor_by_type(trigger.sensor_type).name %></td>
+        <td><%= Lurra.Triggers.Rule.to_human(trigger.rule) %></td>
+        <td><%= Lurra.Triggers.Action.to_human(trigger.actions) %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.trigger_show_path(@socket, :show, trigger) %></span>
+          <span><%= live_patch "Edit", to: Routes.trigger_index_path(@socket, :edit, trigger) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: trigger.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Trigger", to: Routes.trigger_index_path(@socket, :new) %></span>

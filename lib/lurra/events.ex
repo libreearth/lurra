@@ -159,4 +159,106 @@ defmodule Lurra.Events do
   def change_event(%Event{} = event, attrs \\ %{}) do
     Event.changeset(event, attrs)
   end
+
+  alias Lurra.Events.Warning
+
+  @doc """
+  Returns the list of warnings.
+
+  ## Examples
+
+      iex> list_warnings()
+      [%Warning{}, ...]
+
+  """
+  def list_warnings do
+    Repo.all(Warning)
+  end
+
+
+  def list_warnings_limit(limit) do
+    query = from(e in Warning, limit: ^limit, order_by: [desc: e.date])
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets a single warning.
+
+  Raises `Ecto.NoResultsError` if the Warning does not exist.
+
+  ## Examples
+
+      iex> get_warning!(123)
+      %Warning{}
+
+      iex> get_warning!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_warning!(id), do: Repo.get!(Warning, id)
+
+  @doc """
+  Creates a warning.
+
+  ## Examples
+
+      iex> create_warning(%{field: value})
+      {:ok, %Warning{}}
+
+      iex> create_warning(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_warning(attrs \\ %{}) do
+    %Warning{}
+    |> Warning.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a warning.
+
+  ## Examples
+
+      iex> update_warning(warning, %{field: new_value})
+      {:ok, %Warning{}}
+
+      iex> update_warning(warning, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_warning(%Warning{} = warning, attrs) do
+    warning
+    |> Warning.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a warning.
+
+  ## Examples
+
+      iex> delete_warning(warning)
+      {:ok, %Warning{}}
+
+      iex> delete_warning(warning)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_warning(%Warning{} = warning) do
+    Repo.delete(warning)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking warning changes.
+
+  ## Examples
+
+      iex> change_warning(warning)
+      %Ecto.Changeset{data: %Warning{}}
+
+  """
+  def change_warning(%Warning{} = warning, attrs \\ %{}) do
+    Warning.changeset(warning, attrs)
+  end
 end

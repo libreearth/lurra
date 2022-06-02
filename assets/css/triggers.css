@@ -1,0 +1,16 @@
+.trigger-rules {
+    display: flex;
+}
+
+.trigger-rules fieldset {
+    width: 200px;
+}
+
+.trigger-rules select{
+    width: 200px;
+}
+
+.trigger-rules i {
+    margin-top: 42px;
+    margin-left: 4px;
+}

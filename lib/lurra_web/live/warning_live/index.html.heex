@@ -1,0 +1,44 @@
+<h1>Listing Warnings</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.warning_index_path(@socket, :index)}>
+    <.live_component
+      module={LurraWeb.WarningLive.FormComponent}
+      id={@warning.id || :new}
+      title={@page_title}
+      action={@live_action}
+      warning={@warning}
+      return_to={Routes.warning_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Device</th>
+      <th>Sensor type</th>
+      <th>Description</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="warnings">
+    <%= for warning <- @warnings do %>
+      <tr id={"warning-#{warning.id}"}>
+        <td><%= warning.date %></td>
+        <td><%= warning.device_id %></td>
+        <td><%= warning.sensor_type %></td>
+        <td><%= warning.description %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.warning_show_path(@socket, :show, warning) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: warning.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

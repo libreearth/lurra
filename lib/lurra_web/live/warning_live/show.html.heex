@@ -1,0 +1,41 @@
+<h1>Show Warning</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.warning_show_path(@socket, :show, @warning)}>
+    <.live_component
+      module={LurraWeb.WarningLive.FormComponent}
+      id={@warning.id}
+      title={@page_title}
+      action={@live_action}
+      warning={@warning}
+      return_to={Routes.warning_show_path(@socket, :show, @warning)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Date:</strong>
+    <%= @warning.date %>
+  </li>
+
+  <li>
+    <strong>Device:</strong>
+    <%= @warning.device_id %>
+  </li>
+
+  <li>
+    <strong>Sensor type:</strong>
+    <%= @warning.sensor_type %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @warning.description %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.warning_show_path(@socket, :edit, @warning), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.warning_index_path(@socket, :index) %></span>

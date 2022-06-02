@@ -19,7 +19,8 @@ defmodule Lurra.Application do
       # Start a worker by calling: Lurra.Worker.start_link(arg)
       # {Lurra.Worker, arg}
       LurraWeb.TwcQueryer,
-      Lurra.Events.ReadingsCache
+      Lurra.Events.ReadingsCache,
+      Lurra.Triggers.Server
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

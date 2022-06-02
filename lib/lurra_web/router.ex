@@ -102,6 +102,15 @@ defmodule LurraWeb.Router do
 
     live "/dashboard", Dashboard
     live "/graph/:device_id/:sensor_type", Graph
+
+    live "/warnings", WarningLive.Index, :index
+    #live "/warnings/new", WarningLive.Index, :new
+    #live "/warnings/:id/edit", WarningLive.Index, :edit
+
+    live "/warnings/:id", WarningLive.Show, :show
+    #live "/warnings/:id/show/edit", WarningLive.Show, :edit
+
+    live "/eco_oasis", EcoOasisLive.Show, :show
   end
 
   scope "/", LurraWeb do
@@ -122,6 +131,13 @@ defmodule LurraWeb.Router do
 
     live "/users", UserLive.Index, :index
     live "/users/:id/edit", UserLive.Index, :edit
+
+    live "/triggers", TriggerLive.Index, :index
+    live "/triggers/new", TriggerLive.Index, :new
+    live "/triggers/:id/edit", TriggerLive.Index, :edit
+
+    live "/triggers/:id", TriggerLive.Show, :show
+    live "/triggers/:id/show/edit", TriggerLive.Show, :edit
   end
 
   scope "/", LurraWeb do

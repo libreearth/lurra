@@ -2,6 +2,8 @@
 @import "./phoenix.css";
 @import "./graph.css";
 @import "./dashboard.css";
+@import "./eco-oasis-gr.css";
+@import "./triggers.css";
 
 /* Alerts and form errors used by phx.new */
 .alert {

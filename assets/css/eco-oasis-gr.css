@@ -1,0 +1,30 @@
+.eco-oasis-gr{
+    width: 1000px;
+    height: 900px;
+    margin: auto;
+    display: block;
+}
+
+.eco-oasis-gr .tank-outline {
+    stroke-width: 2px;
+    stroke: black;
+    fill: none;
+}
+
+.eco-oasis-gr .tank text {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 9px;
+}
+
+.eco-oasis-gr .tank .title {
+    font-size: 12px;
+}
+
+.eco-oasis-gr .tank .temperature {
+    fill: white;
+    stroke: white;
+}
+
+.eco-oasis-gr .cloud path{
+    fill: lightblue;
+}

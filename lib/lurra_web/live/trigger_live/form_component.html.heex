@@ -1,0 +1,68 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="trigger-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+    <%= error_tag f, :name %>
+  
+    <%= label f, :device_id %>
+    <%= select f, :device_id, [{"",nil} | @observers] %>
+    <%= error_tag f, :device_id %>
+  
+    <%= label f, :sensor_type %>
+    <%= select f, :sensor_type, [{"",nil} | @sensors] %>
+    <%= error_tag f, :sensor_type %>
+  
+    <div class="trigger-rules">
+      <fieldset>
+        <%= label f, "Rule" %>
+        <%= select f, :rule_module, [{"",nil} | @rules], value: @rule_module %>
+        <%= error_tag f, :rule_module %>
+      </fieldset>
+
+      <%= for param <- rule_params(@changeset) do%>
+        <fieldset>
+          <%= label f, String.to_atom(param) %>
+          <%= text_input f, String.to_atom(param), value: assigns[String.to_atom(param)] %>
+          <%= error_tag f, String.to_atom(param) %>
+        </fieldset>
+      <% end %>
+    </div>
+
+    <%= hidden_input f, :rule %>
+
+    
+    <%= for {action, i} <- Enum.with_index(actions_from_changeset(@changeset)) do %>
+      <div class="trigger-rules">
+        <fieldset>
+          <%= label f, "Action" %>
+          <%= select f, String.to_atom("action_module_#{i}"), [{"",nil} | @actions], value: action["module"] %>
+          <%= error_tag f, String.to_atom("action_module_#{i}") %>
+        </fieldset>
+        <%= for param <- action_params(action["module"] |> String.to_atom()) do %>
+          <fieldset>
+            <%= label f, param %>
+            <%= text_input f, String.to_atom("#{param}_#{i}"), value: action[param] %>
+            <%= error_tag f, String.to_atom("#{param}_#{i}")  %>
+          </fieldset>
+        <% end %>
+        <i class="fa fa-times-circle hand-cursor" phx-click="delete-action" phx-target={@myself} phx-value-sensor={i}></i>
+      </div>
+    <% end %>
+    <i class="fa fa-plus hand-cursor" phx-click="add-action-row" phx-target={@myself}> Add action </i>
+  
+    <%= hidden_input f, :actions %>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>
