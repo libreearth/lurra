@@ -261,4 +261,8 @@ defmodule Lurra.Events do
   def change_warning(%Warning{} = warning, attrs \\ %{}) do
     Warning.changeset(warning, attrs)
   end
+
+  def count_new_warnings(current_time) do
+    Repo.one(from p in Warning, select: count(p.id), where: p.date > ^current_time)
+  end
 end

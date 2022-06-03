@@ -4,9 +4,11 @@ defmodule LurraWeb.WarningLive.Index do
   alias Lurra.Events
   alias Lurra.Events.Warning
   alias Lurra.Monitoring
+  alias Lurra.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_token" => user_token}, socket) do
+    update_user_visit(user_token)
     {:ok, assign(socket, :warnings, list_warnings())}
   end
 
@@ -43,5 +45,10 @@ defmodule LurraWeb.WarningLive.Index do
 
   defp list_warnings do
     Events.list_warnings_limit(100)
+  end
+
+  defp update_user_visit(user_token) do
+    Accounts.get_user_by_session_token(user_token)
+    |> Accounts.update_user(%{last_warning_visit: :erlang.system_time(:millisecond)})
   end
 end

@@ -24,7 +24,7 @@
                   <li><%= link "Sensors", to: Routes.sensor_index_path(@conn, :index) %></li>
                   <li><%= link "Observers", to: Routes.observer_index_path(@conn, :index) %></li>
                   <li><%= link "Triggers", to: Routes.trigger_index_path(@conn, :index) %></li>
-                  <li><%= link "Warning history", to: Routes.warning_index_path(@conn, :index) %></li>
+                  <li><%= link "Warnings (#{Map.get(@current_user, :last_warning_visit, 0) |> Lurra.Events.count_new_warnings()})", to: Routes.warning_index_path(@conn, :index) %></li>
                 <% end %>
               <% end %>
             </ul>
