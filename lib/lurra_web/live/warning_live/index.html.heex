@@ -27,9 +27,9 @@
   <tbody id="warnings">
     <%= for warning <- @warnings do %>
       <tr id={"warning-#{warning.id}"}>
-        <td><%= warning.date %></td>
-        <td><%= warning.device_id %></td>
-        <td><%= warning.sensor_type %></td>
+        <td><%= warning.date|> DateTime.from_unix!(:millisecond) |> DateTime.to_string |> String.replace("Z", " UTC") %></td>
+        <td><%= Monitoring.get_observer_by_device_id(warning.device_id).name  %></td>
+        <td><%= Monitoring.get_sensor_by_type(warning.sensor_type).name %></td>
         <td><%= warning.description %></td>
 
         <td>

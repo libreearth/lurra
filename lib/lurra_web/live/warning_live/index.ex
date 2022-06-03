@@ -3,6 +3,7 @@ defmodule LurraWeb.WarningLive.Index do
 
   alias Lurra.Events
   alias Lurra.Events.Warning
+  alias Lurra.Monitoring
 
   @impl true
   def mount(_params, _session, socket) do
