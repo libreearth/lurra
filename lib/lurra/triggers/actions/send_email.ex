@@ -8,8 +8,7 @@ defmodule Lurra.Triggers.Actions.SendEmail do
   def to_human(data), do: "Send email to #{data["email"]}"
   def run(action, _rule, _payload, trigger) do
     email = email(trigger, action)
-    IO.puts "MAAAAAAAAAAAAAAAAILLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-    Lurra.Mailer.deliver(email) |> IO.inspect
+    Lurra.Mailer.deliver(email)
     :ok
   end
 

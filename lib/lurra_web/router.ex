@@ -110,7 +110,7 @@ defmodule LurraWeb.Router do
     live "/warnings/:id", WarningLive.Show, :show
     #live "/warnings/:id/show/edit", WarningLive.Show, :edit
 
-    live "/eco_oasis", EcoOasisLive.Show, :show
+    live "/eco_oasis_graph", EcoOasisGraphLive.Show, :show
   end
 
   scope "/", LurraWeb do

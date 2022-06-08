@@ -1,4 +1,4 @@
-defmodule LurraWeb.EcoOasisLive.Show do
+defmodule LurraWeb.EcoOasisGraphLive.Show do
   use Surface.LiveView
 
   alias LurraWeb.Components.Dome.Tank
