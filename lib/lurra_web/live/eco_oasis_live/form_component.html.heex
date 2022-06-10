@@ -1,0 +1,48 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="eco_oasis-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+    <%= error_tag f, :name %>
+
+    <label>Elements</label>
+
+    <%= inputs_for f, :elements, fn v -> %>
+      <div class="trigger-rules">
+        <fieldset>
+          <%= label v, :name %>
+          <%= text_input v, :name, class: "form-control" %>
+          <%= error_tag v, :name %>
+        </fieldset>
+
+        <fieldset>
+          <%= label v, :type %>
+          <%= select v, :type, @types, class: "form-control" %>
+          <%= error_tag v, :type %>
+        </fieldset>
+
+          <%= label v, :delete %><br>
+          <%= if is_nil(v.data.temp_id || v.params["temp_id"]) do %>
+            <%= checkbox v, :delete , class: "ionized"%>
+          <% else %>
+            <%= hidden_input v, :temp_id %>
+            <i class="fa fa-times-circle hand-cursor" phx-click="remove-element" phx-value-remove={v.data.temp_id || v.params["temp_id"]} phx-target={@myself}></i>
+          <% end %>
+      </div>
+    <% end %>
+
+    <a href="#" phx-click="add-element" phx-target={@myself}>Add an element</a>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>

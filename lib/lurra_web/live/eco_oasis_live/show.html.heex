@@ -1,0 +1,26 @@
+<h1>Show Eco oasis</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.eco_oasis_show_path(@socket, :show, @eco_oasis)}>
+    <.live_component
+      module={LurraWeb.EcoOasisLive.FormComponent}
+      id={@eco_oasis.id}
+      title={@page_title}
+      action={@live_action}
+      eco_oasis={@eco_oasis}
+      return_to={Routes.eco_oasis_show_path(@socket, :show, @eco_oasis)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @eco_oasis.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.eco_oasis_show_path(@socket, :edit, @eco_oasis), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.eco_oasis_index_path(@socket, :index) %></span>

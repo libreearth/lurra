@@ -1,0 +1,17 @@
+<div>
+  <Form for={:observer_location} change="change" submit="save">
+    <Field name={:eco_oasis}>
+      <Label>Eco oasis</Label>
+      <Select options={[{"", nil} | @eco_oases]} opts={value: @location["eco_oasis"]}/>
+    </Field>
+    {#for sensor <- @observer.sensors}
+      <Field name={String.to_atom("#{sensor.id}")}>
+        <Label>{sensor.name}</Label>
+        <Select options={[{"", nil} | @elements]} opts={value: @location["#{sensor.id}"]}/>
+      </Field>
+    {/for}
+    <div>
+      <Submit label="Save" opts={phx_disable_with: "Saving..."}/>
+    </div>
+  </Form>
+</div>

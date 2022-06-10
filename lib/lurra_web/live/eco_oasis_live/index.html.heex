@@ -1,0 +1,39 @@
+<h1>Listing Eco oases</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.eco_oasis_index_path(@socket, :index)}>
+    <.live_component
+      module={LurraWeb.EcoOasisLive.FormComponent}
+      id={@eco_oasis.id || :new}
+      title={@page_title}
+      action={@live_action}
+      eco_oasis={@eco_oasis}
+      return_to={Routes.eco_oasis_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="eco_oases">
+    <%= for eco_oasis <- @eco_oases do %>
+      <tr id={"eco_oasis-#{eco_oasis.id}"}>
+        <td><%= eco_oasis.name %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.eco_oasis_show_path(@socket, :show, eco_oasis) %></span>
+          <span><%= live_patch "Edit", to: Routes.eco_oasis_index_path(@socket, :edit, eco_oasis) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: eco_oasis.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Eco oasis", to: Routes.eco_oasis_index_path(@socket, :new) %></span>

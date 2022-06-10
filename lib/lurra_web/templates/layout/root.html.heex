@@ -22,9 +22,7 @@
                 <li><%= link "Last Events", to: Routes.event_index_path(@conn, :index) %></li>
                 <li><%= link "Warnings (#{(@current_user.last_warning_visit || 0 )|> Lurra.Events.count_new_warnings()})", to: Routes.warning_index_path(@conn, :index) %></li>
                 <%= if not is_nil(@current_user) and @current_user.role == "admin" do %>
-                  <li><%= link "Sensors", to: Routes.sensor_index_path(@conn, :index) %></li>
-                  <li><%= link "Observers", to: Routes.observer_index_path(@conn, :index) %></li>
-                  <li><%= link "Triggers", to: Routes.trigger_index_path(@conn, :index) %></li>
+                  <li><%= link "Administration", to: Routes.live_path(@conn, LurraWeb.Admin) %></li>
                 <% end %>
               <% end %>
             </ul>

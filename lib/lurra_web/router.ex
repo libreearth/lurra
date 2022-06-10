@@ -116,6 +116,15 @@ defmodule LurraWeb.Router do
   scope "/", LurraWeb do
     pipe_through [:browser, :require_admin]
 
+    live "/admin", Admin
+
+    live "/eco_oases", EcoOasisLive.Index, :index
+    live "/eco_oases/new", EcoOasisLive.Index, :new
+    live "/eco_oases/:id/edit", EcoOasisLive.Index, :edit
+
+    live "/eco_oases/:id", EcoOasisLive.Show, :show
+    live "/eco_oases/:id/show/edit", EcoOasisLive.Show, :edit
+
     live "/sensors", SensorLive.Index, :index
     live "/sensors/new", SensorLive.Index, :new
     live "/sensors/:id/edit", SensorLive.Index, :edit
@@ -138,6 +147,9 @@ defmodule LurraWeb.Router do
 
     live "/triggers/:id", TriggerLive.Show, :show
     live "/triggers/:id/show/edit", TriggerLive.Show, :edit
+
+    live "/observers_location", ObserverLocationLive.Index, :index
+    live "/observers_location/:id/edit", ObserverLocationLive.Index, :edit
   end
 
   scope "/", LurraWeb do

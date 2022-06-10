@@ -20,7 +20,10 @@ defmodule Lurra.Application do
       # {Lurra.Worker, arg}
       LurraWeb.TwcQueryer,
       Lurra.Events.ReadingsCache,
-      Lurra.Triggers.Server
+      Lurra.Triggers.Server,
+      {Registry, keys: :unique, name: Registry.EcoOasis},
+      Lurra.Core.EcoOasis.Server.ServerSupervisor,
+      {Task, &Lurra.Core.EcoOasis.Server.ServerSupervisor.initial_eco_oasis/0}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -59,7 +59,6 @@ defmodule LurraWeb.ObserverLive.FormComponent do
   end
 
   defp save_observer(socket, :edit, observer_params) do
-    IO.inspect observer_params
     case Monitoring.update_observer(socket.assigns.box_sensors, socket.assigns.observer, observer_params) do
       {:ok, _observer} ->
         {:noreply,

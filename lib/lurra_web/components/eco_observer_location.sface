@@ -1,0 +1,11 @@
+<div class="observer">
+  <h2>{@observer.name} @ {get_oasis_name(@observer)}</h2>
+  <ul>
+    {#for sensor <- @observer.sensors}
+      <li>
+        <strong>{sensor.name}:</strong> {get_element(@observer, sensor)}
+      </li>
+    {/for}
+    <Link label="Change location" to={Routes.observer_location_index_path(Endpoint, :edit, @observer)} />
+  </ul>
+</div>

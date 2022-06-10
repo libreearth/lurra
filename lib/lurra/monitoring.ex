@@ -7,6 +7,28 @@ defmodule Lurra.Monitoring do
   alias Lurra.Repo
 
   alias Lurra.Monitoring.Sensor
+  alias Lurra.Monitoring.ObserverSensor
+
+  def list_sensors_at_element(element_id) do
+    Repo.all(from os in ObserverSensor, where: os.element_id == ^element_id)
+    |> Enum.map(fn os -> {get_observer!(os.observer_id).device_id, get_sensor!(os.sensor_id).sensor_type} end)
+  end
+
+  def list_observer_sensor_by_observer(observer_id) do
+    Repo.all(from os in ObserverSensor, where: os.observer_id == ^observer_id)
+  end
+
+  def update_observer_and_sensor_element(observer_id, sensor_id, element_id) do
+    case Repo.one!(from os in ObserverSensor, where: os.observer_id == ^observer_id and os.sensor_id == ^sensor_id) do
+      nil ->
+        nil
+      observer_sensor ->
+        case Repo.update(ObserverSensor.changeset(observer_sensor, %{element_id: element_id})) do
+          {:ok, _} -> :ok
+          error -> error
+        end
+    end
+  end
 
   def get_sensor_by_type(type) do
     Repo.get_by(Sensor, sensor_type: type)

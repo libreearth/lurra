@@ -4,6 +4,7 @@
 
 .trigger-rules fieldset {
     width: 200px;
+    height: 60px;
 }
 
 .trigger-rules select{
@@ -11,6 +12,11 @@
 }
 
 .trigger-rules i {
+    margin-top: 42px;
+    margin-left: 4px;
+}
+
+.trigger-rules .ionized {
     margin-top: 42px;
     margin-left: 4px;
 }

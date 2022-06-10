@@ -1,0 +1,12 @@
+<div class="dashboard-wrapper">
+  {#if @live_action == :edit}
+    <Dialog title={"Change locations of #{@observer.name}"} show={true} hideEvent="close">
+      <FormComponent id="form" observer={@observer}/>
+    </Dialog>
+  {/if}
+  <div class="container dashboard"> 
+    {#for box <- @observers}
+      <EcoObserverLocation observer={box}/>
+    {/for}    
+  </div>
+</div>
