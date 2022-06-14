@@ -28,7 +28,17 @@ import topbar from "../vendor/topbar"
 import Hooks from "./_hooks"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone}, hooks: Hooks})
+let params =  (node) => {
+    var restoreNode = 
+        node && node.querySelector("div[data-state-restore='true']")
+    if (restoreNode) {
+        var key = restoreNode.getAttribute("data-session-key")
+        var item = localStorage.getItem(key)
+        return  {_csrf_token: csrfToken, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, restore: item}
+    } else 
+        return {_csrf_token: csrfToken, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone}
+}
+let liveSocket = new LiveSocket("/live", Socket, {params: params, hooks: Hooks})
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})

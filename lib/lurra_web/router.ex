@@ -125,6 +125,8 @@ defmodule LurraWeb.Router do
     live "/eco_oases/:id", EcoOasisLive.Show, :show
     live "/eco_oases/:id/show/edit", EcoOasisLive.Show, :edit
 
+    live "/eco_oasis_dashboard", EcoOasisDashboard
+
     live "/sensors", SensorLive.Index, :index
     live "/sensors/new", SensorLive.Index, :new
     live "/sensors/:id/edit", SensorLive.Index, :edit

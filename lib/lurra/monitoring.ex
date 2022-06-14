@@ -11,8 +11,10 @@ defmodule Lurra.Monitoring do
 
   def list_sensors_at_element(element_id) do
     Repo.all(from os in ObserverSensor, where: os.element_id == ^element_id)
-    |> Enum.map(fn os -> {get_observer!(os.observer_id).device_id, get_sensor!(os.sensor_id).sensor_type} end)
+    |> Enum.map(fn os -> sensor_tuple(get_observer!(os.observer_id), get_sensor!(os.sensor_id)) end)
   end
+
+  defp sensor_tuple(observer, sensor), do: {observer.device_id, sensor.sensor_type, sensor.name, sensor.unit, sensor.precision}
 
   def list_observer_sensor_by_observer(observer_id) do
     Repo.all(from os in ObserverSensor, where: os.observer_id == ^observer_id)

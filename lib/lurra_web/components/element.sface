@@ -1,0 +1,11 @@
+<div class="observer">
+  <h2>{@element.name}</h2>
+  <ul>
+  {#for {{device_id, sensor_type}, {name, payload, unit, precision}} <- @element.measurements}
+    <li>
+        <strong>{name}:</strong> {format(payload, precision)}{unit}
+      <Link to={Routes.live_path(LurraWeb.Endpoint, LurraWeb.Graph, device_id, sensor_type)}><i class="fa fa-line-chart"/></Link>
+    </li>
+  {/for}
+  </ul>
+</div>

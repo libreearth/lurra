@@ -11,7 +11,7 @@ defmodule LurraWeb.Graph do
   alias Surface.Components.Form.Field
   alias LurraWeb.Components.Dialog
   alias LurraWeb.Graph.DownloadData
-  alias LurraWeb.Router.Helpers, as: Routes
+
 
   @events_topic "events"
   @time_options [{"60 minutes", 60*60000}, {"120 minutes", 120*60000}, {"12 hours", 12*60*60000}, {"24 hours", 24*60*60000}, {"48 hours", 48*60*60000}, {"72 hours", 72*60*60000}]

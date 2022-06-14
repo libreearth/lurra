@@ -4,7 +4,7 @@ defmodule LurraWeb.EcoOasisLive.FormComponent do
   alias Lurra.EcoOases
   alias Lurra.EcoOases.Element
 
-  @types ["Tank", "Well", "Pool", "Filter", "Ground basin", "Air location"]
+  @types ["Tank", "Pond", "Slice", "Hexagon", "Vermifilter", "Soil"]
 
   @impl true
   def update(%{eco_oasis: eco_oasis} = assigns, socket) do

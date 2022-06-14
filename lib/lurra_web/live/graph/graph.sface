@@ -1,5 +1,5 @@
 <div class="container graph">
-    <div class="title-back"><Link label="Back" to={Routes.live_path(LurraWeb.Endpoint, LurraWeb.Dashboard)}/></div>
+    <div  class="title-back"><Link label="Back" to={{:javascript, "history.back()"}} /></div>
     <div class="graph-title">
         <h2>{@observer.name} - {@sensor.name} </h2> 
     </div>
