@@ -51,7 +51,7 @@ defmodule LurraWeb.TwcQueryer do
   defp request_weather_com(device_id, api_key) do
     with {:ok, request} <- HTTPoison.get("https://api.weather.com/v2/pws/observations/current?stationId=#{device_id}&format=json&units=m&apiKey=#{api_key}&numericPrecision=decimal"),
          {:ok, req_map} <- Jason.decode(request.body) do
-      {:ok, req_map}
+      {:ok, req_map} |> IO.inspect
     else
       error ->
         IO.inspect error

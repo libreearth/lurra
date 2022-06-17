@@ -15,8 +15,9 @@ defmodule LurraWeb.EcoOasisDashboard do
     if connected?(socket) do
       Endpoint.subscribe(@events_topic)
     end
-    selected_eco_oasis_id = get_connect_params(socket)["restore"] |> IO.inspect
+    selected_eco_oasis_id = get_connect_params(socket)["restore"]
     socket = socket
+    |> assign(:show, connected?(socket))
     |> assign(:eco_oases, ServerSupervisor.list_all() |> Enum.map(fn eco -> {eco.name, eco.id} end))
     |> assign(:selected_eco, get_selected_eco_oasis(selected_eco_oasis_id) )
     |> assign_timezone()
