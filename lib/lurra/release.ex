@@ -1,9 +1,27 @@
 defmodule Lurra.Release do
-  @moduledoc """
-  Used for executing DB release tasks when run in production without Mix
-  installed.
-  """
   @app :lurra
+
+  def setupdb do
+    createdb()
+    migrate()
+  end
+
+  def createdb do
+    load_app()
+    for repo <- repos() do
+      :ok = ensure_repo_created(repo)
+    end
+  end
+
+
+  defp ensure_repo_created(repo) do
+    IO.puts "Created #{inspect repo} database if it doesn't exist"
+    case repo.__adapter__.storage_up(repo.config) do
+      :ok -> :ok
+      {:error, :already_up} -> :ok
+      {:error, term} -> {:error, term}
+    end
+  end
 
   def migrate do
     load_app()
