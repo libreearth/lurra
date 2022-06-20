@@ -1,4 +1,4 @@
-defmodule Lurra.Repo.Migrations.CreateEvents do
+defmodule Lurra.Repo.Migrations.CreateEventsNv do
   use Ecto.Migration
 
   def change do
