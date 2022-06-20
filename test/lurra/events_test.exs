@@ -62,4 +62,64 @@ defmodule Lurra.EventsTest do
       assert %Ecto.Changeset{} = Events.change_event(event)
     end
   end
+
+  describe "warnings" do
+    alias Lurra.Events.Warning
+
+    import Lurra.EventsFixtures
+
+    @invalid_attrs %{date: nil, description: nil, device_id: nil, sensor_type: nil}
+
+    test "list_warnings/0 returns all warnings" do
+      warning = warning_fixture()
+      assert Events.list_warnings() == [warning]
+    end
+
+    test "get_warning!/1 returns the warning with given id" do
+      warning = warning_fixture()
+      assert Events.get_warning!(warning.id) == warning
+    end
+
+    test "create_warning/1 with valid data creates a warning" do
+      valid_attrs = %{date: 42, description: "some description", device_id: "some device_id", sensor_type: 42}
+
+      assert {:ok, %Warning{} = warning} = Events.create_warning(valid_attrs)
+      assert warning.date == 42
+      assert warning.description == "some description"
+      assert warning.device_id == "some device_id"
+      assert warning.sensor_type == 42
+    end
+
+    test "create_warning/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Events.create_warning(@invalid_attrs)
+    end
+
+    test "update_warning/2 with valid data updates the warning" do
+      warning = warning_fixture()
+      update_attrs = %{date: 43, description: "some updated description", device_id: "some updated device_id", sensor_type: 43}
+
+      assert {:ok, %Warning{} = warning} = Events.update_warning(warning, update_attrs)
+      assert warning.date == 43
+      assert warning.description == "some updated description"
+      assert warning.device_id == "some updated device_id"
+      assert warning.sensor_type == 43
+    end
+
+    test "update_warning/2 with invalid data returns error changeset" do
+      warning = warning_fixture()
+      assert {:error, %Ecto.Changeset{}} = Events.update_warning(warning, @invalid_attrs)
+      assert warning == Events.get_warning!(warning.id)
+    end
+
+    test "delete_warning/1 deletes the warning" do
+      warning = warning_fixture()
+      assert {:ok, %Warning{}} = Events.delete_warning(warning)
+      assert_raise Ecto.NoResultsError, fn -> Events.get_warning!(warning.id) end
+    end
+
+    test "change_warning/1 returns a warning changeset" do
+      warning = warning_fixture()
+      assert %Ecto.Changeset{} = Events.change_warning(warning)
+    end
+  end
 end

@@ -20,4 +20,21 @@ defmodule Lurra.EventsFixtures do
 
     event
   end
+
+  @doc """
+  Generate a warning.
+  """
+  def warning_fixture(attrs \\ %{}) do
+    {:ok, warning} =
+      attrs
+      |> Enum.into(%{
+        date: 42,
+        description: "some description",
+        device_id: "some device_id",
+        sensor_type: 42
+      })
+      |> Lurra.Events.create_warning()
+
+    warning
+  end
 end
