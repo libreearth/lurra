@@ -3,7 +3,7 @@ defmodule LurraWeb.Router do
 
   import LurraWeb.UserAuth
 
-  import Surface.Catalogue.Router
+  #import Surface.Catalogue.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -71,12 +71,12 @@ defmodule LurraWeb.Router do
     end
   end
 
-  if Mix.env() == :dev do
-    scope "/" do
-      pipe_through :browser
-      surface_catalogue "/catalogue"
-    end
-  end
+  #if Mix.env() == :dev do
+  #  scope "/" do
+  #    pipe_through :browser
+  #    surface_catalogue "/catalogue"
+  #  end
+  #end
 
   ## Authentication routes
 
