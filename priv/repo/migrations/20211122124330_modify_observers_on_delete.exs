@@ -1,4 +1,4 @@
-defmodule Lurra.Repo.Migrations.CreateObserversSensors do
+defmodule Lurra.Repo.Migrations.ModifyObserversOnDelete do
   use Ecto.Migration
 
   def change do

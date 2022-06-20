@@ -1,4 +1,4 @@
-defmodule Lurra.Repo.Migrations.CreateEvents do
+defmodule Lurra.Repo.Migrations.AddLastWarningToUsers do
   use Ecto.Migration
 
   def change do
