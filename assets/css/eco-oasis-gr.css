@@ -2,7 +2,13 @@
     width: 1000px;
     height: 900px;
     margin: auto;
-    display: block;
+    display: flex;
+    justify-content: center;
+}
+
+.eco-oasis-gr .tank{
+    width: 75px;
+    height: 250px;
 }
 
 .eco-oasis-gr .tank-outline {

@@ -1,49 +1,65 @@
 defmodule LurraWeb.EcoOasisGraphLive.Show do
   use Surface.LiveView
 
+  alias Lurra.Core.EcoOasis.Server.ServerSupervisor
   alias LurraWeb.Components.Dome.Tank
   alias LurraWeb.Components.Dome.Cloud
   alias LurraWeb.Endpoint
 
-  @events_topic "events"
+  @events_topic "eco_oasis"
 
-  def mount(_params, _session, socket) do
+  def mount(%{"id" => eco_oasis_id}, _session, socket) do
     if connected?(socket) do
       Endpoint.subscribe(@events_topic)
     end
-
+    eco_oasis = ServerSupervisor.get_eco_oasis(eco_oasis_id)
     {
       :ok,
       socket
-      |> assign(:readings, Lurra.Events.ReadingsCache.get_readings())
+      |> assign(:eco_oasis, eco_oasis)
     }
   end
 
-  def handle_info(%{event: "event_created", payload: %{ payload: payload, device_id: device_id, type: type}, topic: "events"}, socket) do
+  def handle_info(%{event: "eco_oasis_updated", payload: %{id: updated_id}, topic: @events_topic}, socket) do
+    current_id = socket.assigns.eco_oasis.id
     {
       :noreply,
       socket
-      |> assign(:readings, Map.put(socket.assigns.readings, {device_id, type}, payload))
+      |> maybe_assign_updated_eco_oasis(current_id, updated_id)
     }
   end
 
   def render(assigns) do
     ~F"""
-      <svg class="eco-oasis-gr">
-        <Tank x={400} y={100} width={50} height={200}
-          max_level={1500} min_level={1300} label="Dinoflagellates" level={get_readings(@readings, "eui-70b3d57ed00493cd", 1)}
-          temperature={get_readings(@readings, "eui-70b3d57ed00493cd", 6)} min_temperature={10} max_temperature={30}
-          />
-        <Tank x={600} y={200} width={50} height={100}
-          max_level={200} min_level={0} label="Vegetables" level={get_readings(@readings, "eui-70b3d57ed0049476", 1)}
-          temperature={get_readings(@readings, "eui-70b3d57ed0049476", 6)} min_temperature={10} max_temperature={30}
-          />
-        <Cloud x={360} y={25}
-          temperature={get_readings(@readings, "eui-70b3d57ed00493cd", 2)}
-          humidity={get_readings(@readings, "eui-70b3d57ed00493cd", 3)}/>
-      </svg>
+      <div class="eco-oasis-gr">
+        {#for element <- @eco_oasis.elements}
+          {#if element.type == "Tank"}
+            <Tank x={0} y={0} width={50} height={200}
+              max_level={1600} min_level={1000} label={element.name} level={get_measurement(element, "Water level")}
+              temperature={get_measurement(element, "Water temperature")} air_temperature={get_measurement(element, "Air temperature")}
+              humidity={get_measurement(element, "Air humidity")} min_temperature={10} max_temperature={30}
+              />
+          {#elseif element.type == "Slice"}
+            <Tank x={0} y={0} width={50} height={100}
+            max_level={400} min_level={0} label={element.name} level={get_measurement(element, "Water level")}
+            temperature={get_measurement(element, "Water temperature")} air_temperature={get_measurement(element, "Air temperature")}
+            humidity={get_measurement(element, "Air humidity")} min_temperature={10} max_temperature={30}
+            />
+          {/if}
+        {/for}
+      </div>
     """
   end
 
-  defp get_readings(readings, observer_id, sensor_type), do: Map.get(readings, {observer_id, sensor_type})
+  defp get_measurement(element, location_type) do
+    Enum.find(element.measurements, fn {{_uid, _sensor_type}, {_name, _value, _units, _format, location}} -> location == location_type end)
+    |> value()
+  end
+
+  defp value(nil), do: nil
+  defp value({{_uid, _sensor_type}, {_name, value, _units, _format, _location}}), do: value
+
+  defp maybe_assign_updated_eco_oasis(socket, current_id, updated_id) when current_id != updated_id, do: socket
+  defp maybe_assign_updated_eco_oasis(socket, current_id, updated_id) when current_id == updated_id, do: assign(socket, :eco_oasis, ServerSupervisor.get_eco_oasis(current_id))
+
 end

@@ -104,13 +104,9 @@ defmodule LurraWeb.Router do
     live "/graph/:device_id/:sensor_type", Graph
 
     live "/warnings", WarningLive.Index, :index
-    #live "/warnings/new", WarningLive.Index, :new
-    #live "/warnings/:id/edit", WarningLive.Index, :edit
-
     live "/warnings/:id", WarningLive.Show, :show
-    #live "/warnings/:id/show/edit", WarningLive.Show, :edit
 
-    live "/eco_oasis_graph", EcoOasisGraphLive.Show, :show
+    live "/eco_oasis_graph/:id", EcoOasisGraphLive.Show, :show
   end
 
   scope "/", LurraWeb do

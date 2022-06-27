@@ -1,6 +1,6 @@
 <div id="eco-dashboard" data-state-restore="true" data-session-key="LURRA_SELECTED_ECO" class="dashboard-wrapper" :hook="Stored">
   {#if @show}
-    <div class="container upper-dashboard"><Form for={:eco_oasis} change="change" opts={autocomplete: "off"}>Selected Eco Oasis:<Select options={@eco_oases} opts={value: @selected_eco.id}/></Form></div>
+    <div class="container upper-dashboard"><Form for={:eco_oasis} change="change" opts={autocomplete: "off"}>Selected Eco Oasis:<Select options={@eco_oases} opts={value: @selected_eco.id}/> <Link to={Routes.eco_oasis_graph_show_path(Endpoint, :show,  @selected_eco.id)}>Show Graph</Link></Form></div>
     <div class="container dashboard"> 
       {#for element <- @selected_eco.elements}
         <Element element={element}/>
