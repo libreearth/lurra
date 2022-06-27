@@ -12,8 +12,8 @@ defmodule Lurra.Core.Element do
   end
 
   defp create_measurements_map(element_id) do
-    for {device_id, sensor_type, name, unit, precision} <- Monitoring.list_sensors_at_element(element_id), into: %{} do
-      {{device_id, sensor_type}, {name, nil, unit, precision}}
+    for {device_id, sensor_type, name, unit, precision, location_type} <- Monitoring.list_sensors_at_element(element_id), into: %{} do
+      {{device_id, sensor_type}, {name, nil, unit, precision, location_type}}
     end
   end
 

@@ -32,7 +32,7 @@ defmodule LurraWeb.EcoOasisGraphLive.Show do
       <svg class="eco-oasis-gr">
         <Tank x={400} y={100} width={50} height={200}
           max_level={1500} min_level={1300} label="Dinoflagellates" level={get_readings(@readings, "eui-70b3d57ed00493cd", 1)}
-         temperature={get_readings(@readings, "eui-70b3d57ed00493cd", 6)} min_temperature={10} max_temperature={30}
+          temperature={get_readings(@readings, "eui-70b3d57ed00493cd", 6)} min_temperature={10} max_temperature={30}
           />
         <Tank x={600} y={200} width={50} height={100}
           max_level={200} min_level={0} label="Vegetables" level={get_readings(@readings, "eui-70b3d57ed0049476", 1)}

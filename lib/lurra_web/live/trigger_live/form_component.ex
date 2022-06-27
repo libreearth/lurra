@@ -20,7 +20,6 @@ defmodule LurraWeb.TriggerLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"trigger" => trigger_params}, socket) do
-    IO.inspect trigger_params
     changeset =
       socket.assigns.trigger
       |> Triggers.change_trigger(trigger_params |> Map.put("rule", build_rule(trigger_params)) |> Map.put("actions", build_actions(trigger_params)))

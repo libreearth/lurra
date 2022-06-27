@@ -17,6 +17,10 @@ defmodule Lurra.EcoOases do
     end
   end
 
+  def get_location_by_observer_and_sensor(observer_id, sensor_id) do
+    Repo.one!(from os in ObserverSensor, where: os.observer_id == ^observer_id and os.sensor_id == ^sensor_id) |> Map.get(:location_type)
+  end
+
   @doc """
   Returns the list of eco_oases.
 

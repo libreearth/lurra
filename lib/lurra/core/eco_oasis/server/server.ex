@@ -40,8 +40,8 @@ defmodule Lurra.Core.EcoOasis.Server do
     for element <- elements do
       key = {device_id, sensor_type}
       if Map.has_key?(element.measurements, key) do
-        {name, _pay, unit, precision} = Map.get(element.measurements, key)
-        %Element{element | measurements: Map.put(element.measurements, key, {name, payload, unit, precision})}
+        {name, _pay, unit, precision, location_type} = Map.get(element.measurements, key) |> IO.inspect
+        %Element{element | measurements: Map.put(element.measurements, key, {name, payload, unit, precision, location_type})}
       else
         element
       end

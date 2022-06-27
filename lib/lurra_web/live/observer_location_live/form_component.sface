@@ -5,10 +5,16 @@
       <Select options={[{"", nil} | @eco_oases]} opts={value: @location["eco_oasis"]}/>
     </Field>
     {#for sensor <- @observer.sensors}
-      <Field name={String.to_atom("#{sensor.id}")}>
-        <Label>{sensor.name}</Label>
-        <Select options={[{"", nil} | @elements]} opts={value: @location["#{sensor.id}"]}/>
-      </Field>
+      <div class="trigger-rules">
+        <Field name={String.to_atom("#{sensor.id}")}>
+          <Label>{sensor.name}</Label>
+          <Select options={[{"", nil} | @elements]} opts={value: @location["#{sensor.id}"]}/>
+        </Field>
+        <Field name={String.to_atom("location_type_#{sensor.id}")}>
+          <Label>Location</Label>
+          <Select options={[{"", nil} | @location_types]} opts={value: @location["location_type_#{sensor.id}"]}/>
+        </Field>
+      </div>
     {/for}
     <div>
       <Submit label="Save" opts={phx_disable_with: "Saving..."}/>

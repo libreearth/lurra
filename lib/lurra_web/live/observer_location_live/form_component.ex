@@ -1,6 +1,8 @@
 defmodule LurraWeb.ObserverLocationLive.FormComponent do
   use Surface.LiveComponent
 
+  @location_types ["Water level", "Water temperature", "Air temperature", "Air humidity", "Pump"]
+
   alias Surface.Components.Form.{Label, Field, Select, Submit}
   alias Surface.Components.Form
   alias Lurra.EcoOases
@@ -20,6 +22,7 @@ defmodule LurraWeb.ObserverLocationLive.FormComponent do
       |> assign(:elements, eco_oasis_selector(original_eco_oasis))
       |> assign(:original_eco_oasis, original_eco_oasis)
       |> assign(:eco_oases, Lurra.EcoOases.list_eco_oases() |> Enum.map(& {&1.name, &1.id}))
+      |> assign(:location_types, @location_types)
     }
   end
 
@@ -56,22 +59,41 @@ defmodule LurraWeb.ObserverLocationLive.FormComponent do
 
   defp save_changes(params, observer_id) do
     params
-    |> Map.delete("eco_oasis")
-    |> Enum.map(fn {sensor_id, element_id} -> save_location(observer_id, sensor_id, element_id) end)
+    |> Enum.filter(fn {key, _} -> key_is_integer?(key) end)
+    |> Enum.map(fn {sensor_id, element_id} -> save_location(observer_id, sensor_id, element_id, params["location_type_#{sensor_id}"]) end)
     |> List.first()
   end
 
-  defp save_location(observer_id, sensor_id, element_id) do
+  defp key_is_integer?(key) do
+    case Integer.parse(key) do
+      {_val, ""} -> true
+      :error -> false
+    end
+  end
+
+  defp save_location(observer_id, sensor_id, element_id, location_type) do
     sensor_id = string_to_int(sensor_id)
     element_id = string_to_int(element_id)
-    Monitoring.update_observer_and_sensor_element(observer_id, sensor_id, element_id)
+    Monitoring.update_observer_and_sensor_element(observer_id, sensor_id, element_id, location_type)
   end
 
   defp create_location(observer) do
+    observer
+    |> create_location_elements()
+    |> create_locations(observer)
+    |> Map.put("eco_oasis", find_eco_oasis_id(observer))
+  end
+
+  defp create_location_elements(observer) do
     for sensor <- observer.sensors, into: %{} do
       {"#{sensor.id}", value_of_element(observer.id, sensor.id)}
     end
-    |> Map.put("eco_oasis", find_eco_oasis_id(observer))
+  end
+
+  defp create_locations(map, observer) do
+    for sensor <- observer.sensors, into: map do
+      {"location_type_#{sensor.id}", location_of_element(observer.id, sensor.id)}
+    end
   end
 
   defp find_eco_oasis_id(observer) do
@@ -87,7 +109,11 @@ defmodule LurraWeb.ObserverLocationLive.FormComponent do
   end
 
   defp value_of_element(observer_id, sensor_id) do
-    EcoOases.get_element_by_observer_and_sensor(observer_id, sensor_id) |> IO.inspect |> nget(:id) |> int_to_string()
+    EcoOases.get_element_by_observer_and_sensor(observer_id, sensor_id) |> nget(:id) |> int_to_string()
+  end
+
+  defp location_of_element(observer_id, sensor_id) do
+    EcoOases.get_location_by_observer_and_sensor(observer_id, sensor_id)
   end
 
   defp nget(nil, _), do: nil

@@ -4,7 +4,7 @@ defmodule LurraWeb.EcoOasisLive.FormComponent do
   alias Lurra.EcoOases
   alias Lurra.EcoOases.Element
 
-  @types ["Tank", "Pond", "Slice", "Hexagon", "Vermifilter", "Soil"]
+  @types ["Tank", "Pond", "Slice", "Hexagon", "Vermifilter", "Soil", "Weather station"]
 
   @impl true
   def update(%{eco_oasis: eco_oasis} = assigns, socket) do
@@ -38,7 +38,7 @@ defmodule LurraWeb.EcoOasisLive.FormComponent do
 
     changeset =
       socket.assigns.changeset
-      |> Ecto.Changeset.put_assoc(:elements, elements) |> IO.inspect
+      |> Ecto.Changeset.put_assoc(:elements, elements)
 
     {:noreply, assign(socket, changeset: changeset)}
   end

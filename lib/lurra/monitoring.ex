@@ -11,21 +11,21 @@ defmodule Lurra.Monitoring do
 
   def list_sensors_at_element(element_id) do
     Repo.all(from os in ObserverSensor, where: os.element_id == ^element_id)
-    |> Enum.map(fn os -> sensor_tuple(get_observer!(os.observer_id), get_sensor!(os.sensor_id)) end)
+    |> Enum.map(fn os -> sensor_tuple(get_observer!(os.observer_id), get_sensor!(os.sensor_id), os.location_type) end)
   end
 
-  defp sensor_tuple(observer, sensor), do: {observer.device_id, sensor.sensor_type, sensor.name, sensor.unit, sensor.precision}
+  defp sensor_tuple(observer, sensor, location_type), do: {observer.device_id, sensor.sensor_type, sensor.name, sensor.unit, sensor.precision, location_type}
 
   def list_observer_sensor_by_observer(observer_id) do
     Repo.all(from os in ObserverSensor, where: os.observer_id == ^observer_id)
   end
 
-  def update_observer_and_sensor_element(observer_id, sensor_id, element_id) do
+  def update_observer_and_sensor_element(observer_id, sensor_id, element_id, location_type) do
     case Repo.one!(from os in ObserverSensor, where: os.observer_id == ^observer_id and os.sensor_id == ^sensor_id) do
       nil ->
         nil
       observer_sensor ->
-        case Repo.update(ObserverSensor.changeset(observer_sensor, %{element_id: element_id})) do
+        case Repo.update(ObserverSensor.changeset(observer_sensor, %{element_id: element_id, location_type: location_type})) do
           {:ok, _} -> :ok
           error -> error
         end
