@@ -44,6 +44,7 @@ defmodule LurraWeb.Components.Dome.Tank do
 
   defp show_cloud(temp, hum), do: not is_nil(temp) or not is_nil(hum)
 
+  defp level_width(nil,  _max_level, _min_level, _height), do: 0.0
   defp level_width(level, max_level, min_level , height), do: height*(level-min_level)/(max_level-min_level)
 
   defp level_y(y, level, max_level, min_level, height), do: y + (height - level_width(level, max_level, min_level, height))

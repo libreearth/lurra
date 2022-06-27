@@ -3,7 +3,6 @@ defmodule LurraWeb.EcoOasisGraphLive.Show do
 
   alias Lurra.Core.EcoOasis.Server.ServerSupervisor
   alias LurraWeb.Components.Dome.Tank
-  alias LurraWeb.Components.Dome.Cloud
   alias LurraWeb.Endpoint
 
   @events_topic "eco_oasis"
