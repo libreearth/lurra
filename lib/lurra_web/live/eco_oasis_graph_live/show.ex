@@ -42,7 +42,7 @@ defmodule LurraWeb.EcoOasisGraphLive.Show do
       <div class="eco-oasis-gr">
         <div class="eco-oasis-gr-background">
           <svg>
-            <g transform="scale(5.5 5.5) translate(-10 -21)">
+            <g transform="scale(5.5 4.7) translate(-10 -21)">
               <path xmlns="http://www.w3.org/2000/svg" d="M 98,93 L 169,93 C 169,54 137,22 98,22 C 59,22 27,54 27,93 L 98,93 z " style="fill:none;stroke:black;stroke-width:1.4;stroke-miterlimit:4;stroke-dasharray:none"/>
             </g>
           </svg>
