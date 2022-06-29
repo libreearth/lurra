@@ -186,6 +186,11 @@ defmodule Lurra.EcoOases do
     |> Repo.update()
   end
 
+  def update_element_data(element_id, data) do
+    get_element!(element_id)
+    |> update_element(%{data: Jason.encode!(data)})
+  end
+
   @doc """
   Deletes a element.
 

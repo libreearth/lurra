@@ -4,6 +4,7 @@ defmodule Lurra.Core.EcoOasis.Server do
   alias LurraWeb.Endpoint
   alias Lurra.Core.Element
   alias Lurra.Core.EcoOasis
+  alias Lurra.EcoOases
 
   @events_topic "events"
   @oasis_topic "eco_oasis"
@@ -14,12 +15,18 @@ defmodule Lurra.Core.EcoOasis.Server do
 
   def init(oasis_id) do
     oasis = load_oasis(oasis_id)
+    Enum.each(oasis.elements, &consolidate_element_data/1)
     Endpoint.subscribe(@events_topic)
     {:ok, oasis}
   end
 
   def handle_call(:get_eco_oasis, _from, oasis) do
     {:reply, oasis, oasis}
+  end
+
+  def handle_call({:put_data, element_id, key, value}, _from, oasis) do
+    new_eco_oasis = %EcoOasis{ oasis | elements: Enum.map(oasis.elements, fn element -> maybe_put_value_in_element(element, element_id, key, value) end)}
+    {:reply, new_eco_oasis, new_eco_oasis}
   end
 
   def handle_cast({:reload, id}, _oasis) do
@@ -40,7 +47,7 @@ defmodule Lurra.Core.EcoOasis.Server do
     for element <- elements do
       key = {device_id, sensor_type}
       if Map.has_key?(element.measurements, key) do
-        {name, _pay, unit, precision, location_type} = Map.get(element.measurements, key) |> IO.inspect
+        {name, _pay, unit, precision, location_type} = Map.get(element.measurements, key)
         %Element{element | measurements: Map.put(element.measurements, key, {name, payload, unit, precision, location_type})}
       else
         element
@@ -61,4 +68,16 @@ defmodule Lurra.Core.EcoOasis.Server do
     Lurra.Core.EcoOasis.new(eco_oasis)
   end
 
+  defp maybe_put_value_in_element(%Element{id: element_id} = element, id, key, value) when element_id == id do
+    new_data =  Map.put(element.data, key, value)
+    EcoOases.update_element_data(element_id, new_data)
+    %Element{ element | data: new_data}
+  end
+  defp maybe_put_value_in_element(%Element{id: element_id} = element, id, _key, _value) when element_id != id do
+    element
+  end
+
+  defp consolidate_element_data(%Element{id: element_id, data: data}) do
+    EcoOases.update_element_data(element_id, data)
+  end
 end

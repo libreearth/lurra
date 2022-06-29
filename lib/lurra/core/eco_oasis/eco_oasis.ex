@@ -5,7 +5,9 @@ defmodule Lurra.Core.EcoOasis do
     %__MODULE__{
       id: map.id,
       name: map.name,
-      elements: Enum.map(map.elements, & Lurra.Core.Element.new(&1))
+      elements: map.elements
+        |> Enum.with_index()
+        |> Enum.map(fn {element, index} -> Lurra.Core.Element.new(element, index) end)
     }
   end
 end

@@ -45,4 +45,8 @@ defmodule Lurra.Core.EcoOasis.Server.ServerSupervisor do
     Registry.select(Registry.EcoOasis, [{{:"$1", :"$2", :"$3"}, [], [{{:"$1", :"$2", :"$3"}}]}])
     |> Enum.map(fn {_, pid, _w} -> GenServer.call(pid, :get_eco_oasis) end)
   end
+
+  def put_element_data(eco_oasis_id, element_id, key, value) do
+    GenServer.call(eco_oasis_pid(eco_oasis_id), {:put_data, element_id, key, value})
+  end
 end
