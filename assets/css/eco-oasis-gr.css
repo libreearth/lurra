@@ -3,6 +3,28 @@
     height: 900px;
     margin: auto;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.eco-oasis-gr .eco-oasis-gr-background {
+    position: absolute;
+    z-index: -1;
+}
+
+.eco-oasis-gr .eco-oasis-gr-background svg{
+    width: 1000px;
+    height: 900px;
+}
+
+.eco-oasis-gr .eco-oasis-gr-background svg circle{
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.eco-oasis-gr .eco-oasis-row {
+    display: flex;
     justify-content: center;
 }
 

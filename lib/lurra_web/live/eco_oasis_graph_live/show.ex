@@ -40,6 +40,13 @@ defmodule LurraWeb.EcoOasisGraphLive.Show do
   def render(assigns) do
     ~F"""
       <div class="eco-oasis-gr">
+        <div class="eco-oasis-gr-background">
+          <svg>
+            <g transform="scale(5.5 5.5) translate(-10 -21)">
+              <path xmlns="http://www.w3.org/2000/svg" d="M 98,93 L 169,93 C 169,54 137,22 98,22 C 59,22 27,54 27,93 L 98,93 z " style="fill:none;stroke:black;stroke-width:1.4;stroke-miterlimit:4;stroke-dasharray:none"/>
+            </g>
+          </svg>
+        </div>
         {#for row <- ["A", "B", "C"]}
           <div class="eco-oasis-row">
             {#for col <- [0,1,2,3,4,5,6,7,8,9,10,11,12]}
