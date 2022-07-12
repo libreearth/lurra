@@ -54,7 +54,7 @@ defmodule LurraWeb.TwcQueryer do
       {:ok, req_map}
     else
       error ->
-        IO.inspect error
+        IO.inspect {"Weather com", error}
         error
     end
   end

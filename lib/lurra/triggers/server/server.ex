@@ -12,6 +12,7 @@ defmodule Lurra.Triggers.Server do
   end
 
   def init([]) do
+    create_ets_tables()
     Endpoint.subscribe(@events_topic)
     {
       :ok,
@@ -43,26 +44,45 @@ defmodule Lurra.Triggers.Server do
     build_trigger_maps(rest_triggers, Map.put(map, {device_id, sensor_type}, [trigger | trigger_list]))
   end
 
+  defp create_ets_tables() do
+    :ets.new(:actions, [:set, :protected, :named_table])
+  end
+
   defp check_triggers(%{device_id: device_id, payload: payload, type: sensor_type}, triggers, results) do
     triggers_of_sensor =  Map.get(triggers, {device_id, sensor_type}, [])
     {triggers_to_run, triggers_discarded} = Lurra.Utils.Enum.filter_split(triggers_of_sensor, fn trigger -> Lurra.Triggers.Rule.check_rule(trigger.rule, payload) end)
 
-    run_triggers(triggers_to_run, results, payload)
+    time = :os.system_time(:millisecond)
+    registered_results =
+      results
+      |> register_triggers_to_run(triggers_to_run, time)
+      |> register_triggers_discarded(triggers_discarded)
 
-    results
-    |> register_triggers(triggers_to_run, true)
-    |> register_triggers(triggers_discarded, false)
+    run_triggers(triggers_to_run, registered_results, time, payload)
+    registered_results
   end
 
-  defp register_triggers(results, triggers, value) do
+  defp register_triggers_to_run(results, triggers, time) do
     for trigger <- triggers, into: results do
-      {trigger.id, value}
+      case Map.get(results, trigger.id) do
+        nil -> {trigger.id, %{value: true, last_true: time}}
+        %{value: false} -> {trigger.id, %{value: true, last_true: time}}
+        other -> {trigger.id, other}
+      end
     end
   end
 
-  defp run_triggers(triggers, results, payload) do
+  defp register_triggers_discarded(results, triggers) do
+    for trigger <- triggers, into: results do
+      case Map.get(results, trigger.id) do
+        nil ->  {trigger.id, %{value: false, last_true: 0}}
+        %{last_true: last_true} -> {trigger.id, %{value: false, last_true: last_true}}
+      end
+    end
+  end
+
+  defp run_triggers(triggers, results, time, payload) do
     triggers
-    |> Enum.filter(fn trigger -> not Map.get(results, trigger.id, false) end)
-    |> Enum.each(fn trigger -> Lurra.Triggers.Action.run(trigger, payload) end)
+    |> Enum.map(fn trigger -> {trigger.id, Lurra.Triggers.Action.run(trigger, Map.get(results, trigger.id), time, payload)} end)
   end
 end
