@@ -2,7 +2,7 @@ defmodule Lurra.Triggers.Action do
   alias Lurra.Triggers.Trigger
 
   def all do
-    [Lurra.Triggers.Actions.RegisterWarning, Lurra.Triggers.Actions.SendEmail]
+    [Lurra.Triggers.Actions.RegisterWarning, Lurra.Triggers.Actions.SendEmail, Lurra.Triggers.Actions.SendTelegram]
   end
 
   def to_human(data) when is_binary(data) do
