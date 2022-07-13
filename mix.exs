@@ -56,8 +56,9 @@ defmodule Lurra.MixProject do
       #{:surface_catalogue, "~> 0.4.1", only: :dev},
       {:timex, "~> 3.7.6"},
       {:csv, "~> 2.3.1"},
-      {:httpoison, "~> 1.8"},
-      {:elixlsx, "~> 0.5.1"}
+      {:httpoison, "~> 1.7.0"},
+      {:elixlsx, "~> 0.5.1"},
+      {:nadia, "~> 0.7.0"}
     ]
   end
 

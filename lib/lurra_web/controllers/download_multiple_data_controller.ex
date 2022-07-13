@@ -101,10 +101,10 @@ defmodule LurraWeb.DownloadMultipleDataController do
   defp payload_to_value(nil), do: nil
   defp payload_to_value(event), do: Float.parse(event.payload) |> elem(0)
 
-  defp find_observer_sensor_tuple({observer_id, sensor_id}) do
+  defp find_observer_sensor_tuple({observer_id, sensor_type}) do
     {
       Monitoring.get_observer_no_preload!(observer_id),
-      Monitoring.get_sensor!(sensor_id)
+      Monitoring.get_sensor_by_type(sensor_type)
     }
   end
 
