@@ -1,5 +1,5 @@
 defmodule LurraWeb.Components.Dialog do
-  use Surface.Component
+  use Surface.LiveComponent
 
   prop title, :string, required: true
   prop show, :boolean, required: true
@@ -9,6 +9,7 @@ defmodule LurraWeb.Components.Dialog do
 
   def render(assigns) do
     ~F"""
+    <div>
     {#if @show}
       <div id="modal" class="phx-modal">
         <div class="phx-modal-content">
@@ -20,6 +21,15 @@ defmodule LurraWeb.Components.Dialog do
         </div>
       </div>
     {/if}
+    </div>
     """
+  end
+
+  def show(id) do
+    send_update(__MODULE__, id: id, show: true)
+  end
+
+  def hide(id) do
+    send_update(__MODULE__, id: id, show: false)
   end
 end

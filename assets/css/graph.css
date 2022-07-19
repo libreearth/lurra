@@ -25,6 +25,16 @@
    margin: auto;
 }
 
+.graph-button {
+    margin-right: 80px;
+    float: right;
+}
+
+.graph-button i {
+    margin: 4px;
+    cursor: pointer;
+}
+
 .title-back {
     display: flex;
     flex-direction: row;
