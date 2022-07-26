@@ -40,6 +40,11 @@ defmodule LurraWeb.ObserverLive.Index do
     {:noreply, assign(socket, :observers, list_observers())}
   end
 
+  def handle_event("reboot", %{"id" => device_id}, socket) do
+    Lurra.TheThingsNetwork.send_message(device_id, 14, <<0x00>>)
+    {:noreply, socket}
+  end
+
   defp list_observers do
     Monitoring.list_observers()
   end

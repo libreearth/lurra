@@ -25,6 +25,18 @@
     <%= text_input f, :api_key %>
     <%= error_tag f, :api_key %>
 
+    <%= label f, :max_depth_level %>
+    <%= number_input f, :max_depth_level %>
+    <%= error_tag f, :max_depth_level %>
+
+    <%= label f, :min_depth_level %>
+    <%= number_input f, :min_depth_level %>
+    <%= error_tag f, :min_depth_level %>
+
+    <%= label f, :fan_level %>
+    <%= number_input f, :fan_level %>
+    <%= error_tag f, :fan_level %>
+
     <%= label f, :sensors %>
     <div>
       <%= for tag <- @box_sensors do %>
