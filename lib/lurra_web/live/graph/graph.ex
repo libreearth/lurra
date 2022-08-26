@@ -15,7 +15,18 @@ defmodule LurraWeb.Graph do
 
 
   @events_topic "events"
-  @time_options [{"60 minutes", 60*60000}, {"120 minutes", 120*60000}, {"12 hours", 12*60*60000}, {"24 hours", 24*60*60000}, {"48 hours", 48*60*60000}, {"72 hours", 72*60*60000}]
+  @time_options [
+      {"60 minutes", 60*60000},
+      {"120 minutes", 120*60000},
+      {"6 hours", 6*60*60000},
+      {"12 hours", 12*60*60000},
+      {"24 hours", 24*60*60000},
+      {"48 hours", 48*60*60000},
+      {"72 hours", 72*60*60000},
+      {"1 week", 7*24*60*60000},
+      {"2 weeks", 2*7*24*60*60000}
+    ]
+
   @default_timezone "UTC"
 
   def mount(%{"device_id" => device_id, "sensor_type" => sensor_type}, _session, socket) do

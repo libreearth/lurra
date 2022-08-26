@@ -7,7 +7,8 @@ config :lurra, Lurra.Repo,
   database: "lurra_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  log: false
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -66,7 +67,7 @@ config :lurra, LurraWeb.Endpoint,
   ]
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console, level: :debug, format: "[$level] $message\n"
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
