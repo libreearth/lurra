@@ -5,9 +5,12 @@
     </div>
     <div class="container">
         <div class="column centered-text">
-            <Form for={:time} change="time-change">
+            <Form for={:time} change="time-change" submit="time-change" class="row-form">
                 <Field name="time_window">
                     <Label/><Select options={@time_options} opts={value: @time}/>
+                </Field>
+                <Field :if={@time==0} name="hours">
+                    <Label/><NumberInput value={@hours} opts={step: :any}/>
                 </Field>
             </Form>
         </div>

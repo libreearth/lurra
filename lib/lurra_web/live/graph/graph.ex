@@ -9,6 +9,7 @@ defmodule LurraWeb.Graph do
   alias Surface.Components.Form.Select
   alias Surface.Components.Form.Label
   alias Surface.Components.Form.Field
+  alias Surface.Components.Form.NumberInput
   alias LurraWeb.Components.Dialog
   alias LurraWeb.Graph.DownloadData
   alias LurraWeb.Graph.VerticalLimits
@@ -24,7 +25,8 @@ defmodule LurraWeb.Graph do
       {"48 hours", 48*60*60000},
       {"72 hours", 72*60*60000},
       {"1 week", 7*24*60*60000},
-      {"2 weeks", 2*7*24*60*60000}
+      {"2 weeks", 2*7*24*60*60000},
+      {"Custom...", 0}
     ]
 
   @default_timezone "UTC"
@@ -43,6 +45,7 @@ defmodule LurraWeb.Graph do
       |> assign(:time_options, @time_options)
       |> assign(:time, @time_options |> List.first() |> elem(1))
       |> assign(:mode, "play")
+      |> assign(:hours, 72)
       |> assign(:max_value, graph_max(graph, sensor))
       |> assign(:min_value, graph_min(graph, sensor))
       |> assign_timezone()
@@ -78,6 +81,15 @@ defmodule LurraWeb.Graph do
       |> assign(:min_value, graph_min(graph, socket.assigns.sensor))
       |> push_event("update-chart", %{})
     }
+  end
+
+  def handle_event("time-change", %{"time" => %{"time_window" => "0", "hours" => hours}}, socket) do
+    time = String.to_integer(hours)*60*60000
+    {:noreply, socket |> assign(:hours, String.to_integer(hours)) |> push_event("window-changed", %{time: time}) }
+  end
+
+  def handle_event("time-change", %{"time" => %{"time_window" => "0"}}, socket) do
+    {:noreply,  assign(socket, :time, 0)  |> assign(:hours, 72) |> push_event("window-changed", %{time: 72*60*60000}) }
   end
 
   def handle_event("time-change", %{"time" => %{"time_window" => miliseconds}}, socket) do

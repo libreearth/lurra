@@ -121,4 +121,9 @@
   cursor: pointer;
 }
 
+.row-form {
+  display: flex;
+  flex-direction: row;
+}
+
 
