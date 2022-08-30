@@ -13,6 +13,7 @@ defmodule LurraWeb.Graph do
   alias LurraWeb.Components.Dialog
   alias LurraWeb.Graph.DownloadData
   alias LurraWeb.Graph.VerticalLimits
+  alias LurraWeb.Graph.Ruler
 
 
   @events_topic "events"
@@ -48,6 +49,7 @@ defmodule LurraWeb.Graph do
       |> assign(:hours, 72)
       |> assign(:max_value, graph_max(graph, sensor))
       |> assign(:min_value, graph_min(graph, sensor))
+      |> assign(:ruler_value, nil)
       |> assign_timezone()
     }
   end
@@ -79,6 +81,15 @@ defmodule LurraWeb.Graph do
       socket
       |> assign(:max_value, graph_max(graph, socket.assigns.sensor))
       |> assign(:min_value, graph_min(graph, socket.assigns.sensor))
+      |> push_event("update-chart", %{})
+    }
+  end
+
+  def handle_info({:add_ruler, value}, socket) do
+    {
+      :noreply,
+      socket
+      |> assign(:ruler_value, value)
       |> push_event("update-chart", %{})
     }
   end
@@ -122,6 +133,11 @@ defmodule LurraWeb.Graph do
 
   def handle_event("show-download-dialog", _params, socket) do
     LurraWeb.Components.Dialog.show("download-data-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("show-ruler-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.show("ruler-dialog")
     {:noreply, socket}
   end
 

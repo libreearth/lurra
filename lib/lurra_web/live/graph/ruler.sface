@@ -1,0 +1,9 @@
+<div>
+  <Form for={:ruler} change="change" class="long-field" submit="save">
+    <Field name={:value}>
+      <Label>Value</Label>
+      <NumberInput value={@value} opts={step: :any}/>
+    </Field>
+    <Submit label="Save" /> 
+  </Form>
+</div>

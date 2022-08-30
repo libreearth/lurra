@@ -40,10 +40,16 @@
     justify-content: flex-end;
 }
 
+.gr-ruler line{
+    fill: none;
+    stroke: orangered;
+    stroke-width: 2px;
+}
+
 .day-rects rect:nth-child(2n+1)  {
     fill: #f8f8f8;
-  }
+}
 
-  .day-rects rect:nth-child(2n)  {
+.day-rects rect:nth-child(2n)  {
     fill: #fff;
-  }
+}

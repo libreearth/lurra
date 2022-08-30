@@ -14,9 +14,10 @@
                 </Field>
             </Form>
         </div>
-        <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit}></svg>
+        <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit} data-rulerval={@ruler_value}></svg>
         <div class="graph-button">
             <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
+            <i class="fa fa-ruler" :on-click="show-ruler-dialog" title="Set ruler"></i>
             <i class="fa fa-download" :on-click="show-download-dialog" title="Download data"></i>
             <i class="fa fa-arrows-v" :on-click="show-vertical-dialog" title="Vertical axis"></i>
             <i :if={@mode=="explore"} :on-click="activate-mode-play" class="fa fa-play" title="Resume real time data"></i>
@@ -30,4 +31,7 @@
 </Dialog>
 <Dialog id="vertical-limits-dialog" title="Vertical limits" show={false} hideEvent="close-vertical-dialog">
     <VerticalLimits id="vertical-limits" max={@max_value} min={@min_value} device_id={@observer.device_id} sensor_type={@sensor.sensor_type}/>
+</Dialog>
+<Dialog id="ruler-dialog" title="Ruler value" show={false} hideEvent="close-ruler-dialog">
+    <Ruler id="ruler" value={@ruler_value}/>
 </Dialog>
