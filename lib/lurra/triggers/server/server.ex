@@ -6,6 +6,7 @@ defmodule Lurra.Triggers.Server do
   alias Lurra.Triggers
 
   @events_topic "events"
+  @five_minutes 1000*60*5
 
   def start_link([]) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -14,6 +15,7 @@ defmodule Lurra.Triggers.Server do
   def init([]) do
     create_ets_tables()
     Endpoint.subscribe(@events_topic)
+    Process.send_after(self(), :tick, 1000)
     {
       :ok,
       {build_trigger_maps(), %{}}
@@ -27,6 +29,32 @@ defmodule Lurra.Triggers.Server do
       :noreply,
       {build_trigger_maps(), results}
     }
+  end
+
+  def handle_info(:tick, {triggers, results}) do
+    Process.send_after(self(), :tick, @five_minutes)
+    timestamps = Lurra.Events.ReadingsCache.get_timestamps()
+    time_triggers =
+      triggers
+      |> Map.values()
+      |> List.flatten()
+      |> Enum.filter(fn trigger -> Lurra.Triggers.Rule.is_time_rule(trigger.rule) end)
+
+    current_timestamp = :os.system_time(:millisecond)
+    updated_results = Enum.reduce(time_triggers, results, fn (trigger, acc) ->
+      case Map.get(timestamps, {trigger.device_id, trigger.sensor_type}) do
+        nil -> acc
+        last_timestamp ->
+          if Lurra.Triggers.Rule.check_time_rule(trigger.rule, current_timestamp, last_timestamp) do
+            registered_triggers = register_triggers_to_run(acc, [trigger], current_timestamp)
+            Lurra.Triggers.Action.run(trigger, Map.get(registered_triggers, trigger.id), current_timestamp, nil)
+            registered_triggers
+          else
+            acc
+          end
+      end
+    end)
+    {:noreply, {triggers, updated_results} }
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "event_created", payload: measurement, topic: @events_topic}, {triggers, results}) do
