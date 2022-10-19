@@ -52,8 +52,6 @@ defmodule Lurra.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:surface, "~> 0.7.4"},
-      #{:surface_formatter, "~> 0.7.5", only: :dev},
-      #{:surface_catalogue, "~> 0.4.1", only: :dev},
       {:timex, "~> 3.7.6"},
       {:csv, "~> 2.3.1"},
       {:httpoison, "~> 1.7.0"},

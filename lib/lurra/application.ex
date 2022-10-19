@@ -19,6 +19,7 @@ defmodule Lurra.Application do
       # Start a worker by calling: Lurra.Worker.start_link(arg)
       # {Lurra.Worker, arg}
       LurraWeb.TwcQueryer,
+      LurraWeb.WolkietolkieQueryer,
       Lurra.Events.ReadingsCache,
       Lurra.Triggers.Server,
       {Registry, keys: :unique, name: Registry.EcoOasis},

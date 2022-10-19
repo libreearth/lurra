@@ -25,6 +25,11 @@
     <%= text_input f, :api_key %>
     <%= error_tag f, :api_key %>
 
+    <%= label f, :timezone %>
+    <%= text_input f, :timezone %>
+    <%= error_tag f, :timezone %>
+    <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank"> List of valid timezones </a>
+
     <%= label f, :max_depth_level %>
     <%= number_input f, :max_depth_level %>
     <%= error_tag f, :max_depth_level %>
