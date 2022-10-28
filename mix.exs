@@ -56,7 +56,8 @@ defmodule Lurra.MixProject do
       {:csv, "~> 2.3.1"},
       {:httpoison, "~> 1.7.0"},
       {:elixlsx, "~> 0.5.1"},
-      {:nadia, "~> 0.7.0"}
+      {:nadia, "~> 0.7.0"},
+      {:emqtt, github: "emqx/emqtt", tag: "1.6.1", system_env: [{"BUILD_WITHOUT_QUIC", "1"}]}
     ]
   end
 

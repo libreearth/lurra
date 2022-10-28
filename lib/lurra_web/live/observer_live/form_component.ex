@@ -5,7 +5,7 @@ defmodule LurraWeb.ObserverLive.FormComponent do
 
   @impl true
 
-  @types ["arduino box", "weather.com", "Wolkie Tolkie"]
+  @types ["arduino box", "esp32c3-box", "weather.com", "Wolkie Tolkie"]
 
   def update(%{observer: observer} = assigns, socket) do
     changeset = Monitoring.change_observer(observer)

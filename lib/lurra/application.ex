@@ -20,6 +20,7 @@ defmodule Lurra.Application do
       # {Lurra.Worker, arg}
       LurraWeb.TwcQueryer,
       LurraWeb.WolkietolkieQueryer,
+      Lurra.ObserverConnectors.Mqtt,
       Lurra.Events.ReadingsCache,
       Lurra.Triggers.Server,
       {Registry, keys: :unique, name: Registry.EcoOasis},
