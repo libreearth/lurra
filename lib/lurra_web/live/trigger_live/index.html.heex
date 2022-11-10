@@ -29,8 +29,8 @@
     <%= for trigger <- @triggers do %>
       <tr id={"trigger-#{trigger.id}"}>
         <td><%= trigger.name %></td>
-        <td><%= Monitoring.get_observer_by_device_id(trigger.device_id).name %></td>
-        <td><%= Monitoring.get_sensor_by_type(trigger.sensor_type).name %></td>
+        <td><%= get_device_name(trigger.device_id) %></td>
+        <td><%= get_sensor_name(trigger.sensor_type) %></td>
         <td><%= Lurra.Triggers.Rule.to_human(trigger.rule) %></td>
         <td><%= Lurra.Triggers.Action.to_human(trigger.actions) %></td>
 

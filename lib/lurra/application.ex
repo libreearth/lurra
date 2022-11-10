@@ -18,8 +18,8 @@ defmodule Lurra.Application do
       LurraWeb.Endpoint,
       # Start a worker by calling: Lurra.Worker.start_link(arg)
       # {Lurra.Worker, arg}
-      LurraWeb.TwcQueryer,
-      LurraWeb.WolkietolkieQueryer,
+      Lurra.ObserverConnectors.Twc,
+      Lurra.ObserverConnectors.Wolkietolkie,
       Lurra.ObserverConnectors.Mqtt,
       Lurra.Events.ReadingsCache,
       Lurra.Triggers.Server,

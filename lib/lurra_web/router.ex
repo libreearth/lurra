@@ -114,6 +114,8 @@ defmodule LurraWeb.Router do
 
     live "/admin", Admin
 
+    live "/buoy_serial", BuoySerial
+
     live "/eco_oases", EcoOasisLive.Index, :index
     live "/eco_oases/new", EcoOasisLive.Index, :new
     live "/eco_oases/:id/edit", EcoOasisLive.Index, :edit

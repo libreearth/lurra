@@ -19,22 +19,19 @@ defmodule Lurra.ObserverConnectors.Mqtt do
   end
 
   def handle_info({:publish, %{payload: payload }}, state) do
-    #send({epoch, value, device_id, sensor })
-
     with {:ok, %{"uuid" => device_id, "time" => time} = message} <- Jason.decode(payload),
           observer <- Monitoring.get_observer_by_device_id(device_id)
-
     do
       for {type, value } <- Map.drop(message, ["uuid", "time"]) do
         case Monitoring.get_sensor_by_type(type) do
           nil -> nil
           sensor ->
-            Events.create_event_and_broadcast(to_string(value), observer.device_id, sensor, time * 1000)
+            case observer do
+              nil -> nil
+              observer ->  Events.create_event_and_broadcast(to_string(value), observer.device_id, sensor, time * 1000)
+            end
         end
       end
-
-      #uuid, time, 6 - temp, 3 - humidity, 1 - water
-         #Events.create_event_and_broadcast(value, device_id, sensor, epoch)
     else
       error -> error
     end

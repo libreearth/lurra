@@ -1,4 +1,4 @@
-defmodule LurraWeb.TwcQueryer do
+defmodule Lurra.ObserverConnectors.Twc do
   use GenServer
 
   alias Lurra.Monitoring

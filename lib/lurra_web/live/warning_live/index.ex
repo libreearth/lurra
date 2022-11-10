@@ -51,4 +51,18 @@ defmodule LurraWeb.WarningLive.Index do
     Accounts.get_user_by_session_token(user_token)
     |> Accounts.update_user(%{last_warning_visit: :erlang.system_time(:millisecond)})
   end
+
+  defp get_device_name(device_id) do
+    case Monitoring.get_observer_by_device_id(device_id) do
+      nil -> "Observer deleted"
+      device -> device.name
+    end
+  end
+
+  defp get_sensor_name(sensor_type) do
+    case Monitoring.get_sensor_by_type(sensor_type) do
+      nil -> "Sensor deleted"
+      sensor -> sensor.name
+    end
+  end
 end

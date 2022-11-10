@@ -28,12 +28,10 @@
     <%= for warning <- @warnings do %>
       <tr id={"warning-#{warning.id}"}>
         <td><%= warning.date|> DateTime.from_unix!(:millisecond) |> DateTime.to_string |> String.replace("Z", " UTC") %></td>
-        <td><%= Monitoring.get_observer_by_device_id(warning.device_id).name  %></td>
-        <td><%= Monitoring.get_sensor_by_type(warning.sensor_type).name %></td>
+        <td><%= get_device_name(warning.device_id)  %></td>
+        <td><%= get_sensor_name(warning.sensor_type) %></td>
         <td><%= warning.description %></td>
-
         <td>
-          <span><%= live_redirect "Show", to: Routes.warning_show_path(@socket, :show, warning) %></span>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: warning.id, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>

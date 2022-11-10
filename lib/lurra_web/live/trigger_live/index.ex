@@ -45,4 +45,18 @@ defmodule LurraWeb.TriggerLive.Index do
   defp list_triggers do
     Triggers.list_triggers()
   end
+
+  defp get_device_name(device_id) do
+    case Monitoring.get_observer_by_device_id(device_id) do
+      nil -> "Observer deleted"
+      device -> device.name
+    end
+  end
+
+  defp get_sensor_name(sensor_type) do
+    case Monitoring.get_sensor_by_type(sensor_type) do
+      nil -> "Sensor deleted"
+      sensor -> sensor.name
+    end
+  end
 end

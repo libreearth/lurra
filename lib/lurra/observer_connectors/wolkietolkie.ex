@@ -1,4 +1,4 @@
-defmodule LurraWeb.WolkietolkieQueryer do
+defmodule Lurra.ObserverConnectors.Wolkietolkie do
   use GenServer
 
   alias Lurra.Monitoring

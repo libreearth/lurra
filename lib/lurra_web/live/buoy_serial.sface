@@ -1,0 +1,3 @@
+<div id="buoy_serial" :hook="BuoySerial">
+  <button id="connect_button">Connect buoy</button>
+</div>

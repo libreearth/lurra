@@ -92,7 +92,10 @@ defmodule LurraWeb.TriggerLive.FormComponent do
   defp list_sensors(nil), do: []
   defp list_sensors(""), do: []
   defp list_sensors(device_id) do
-    find_observer(device_id, Monitoring.list_observers()) |> Map.get(:sensors, []) |> sensors_to_options()
+    case find_observer(device_id, Monitoring.list_observers()) do
+      nil -> []
+      observer -> Map.get(observer, :sensors, []) |> sensors_to_options()
+    end
   end
 
   defp sensors_to_options(sensors_list), do: Enum.map(sensors_list, fn sensor -> {sensor.name, sensor.sensor_type} end)
