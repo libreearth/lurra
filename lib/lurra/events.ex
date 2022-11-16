@@ -113,6 +113,18 @@ defmodule Lurra.Events do
      end
   end
 
+  def create_event(value, device_id, sensor_type, epoch \\ :erlang.system_time(:millisecond)) do
+    valid_attrs = %{payload: "#{value}", timestamp: epoch, device_id: device_id, type: "#{sensor_type}"}
+
+    case Lurra.Events.create_event(valid_attrs) do
+      {:ok, _event} ->
+       nil
+      error ->
+       IO.inspect error
+       nil
+     end
+  end
+
   @doc """
   Updates a event.
 

@@ -1,3 +1,23 @@
-<div id="buoy_serial" :hook="BuoySerial">
-  <button id="connect_button">Connect buoy</button>
+<div id="buoy_serial" :hook="BuoySerial" class="container buoy_manager">
+  <h2> Buoy manager </h2>
+  {#if @connected}
+    <div class="buoy_info">
+      🟢Connected 
+      <ul>
+        <li><strong>UID:</strong> {@buoy_uid}</li>  
+        <li><strong>Date:</strong> {@buoy_date} UTC</li>
+        <li><strong>Sensors:</strong> {print_sensors(@buoy_sensors)}</li>
+      </ul>
+    </div>
+  {#else}
+    <div class="buoy_info">
+      🔴Disconected
+    </div>
+  {/if}
+  <button id="connect_button" disabled={@connected}>Connect buoy</button>
+  <button id="set_time_button" disabled={not @connected}>Set Time</button>
+  <button id="upload_button" disabled={not @connected}>Upload data</button>
+  <button id="download_button" disabled={not @connected}>Download data as csv</button>
+  <button id="clear_button" disabled={not @connected}>Clear data</button>
+  <button id="disconnect_and_log_button" disabled={not @connected}>Disconnect & Log</button>
 </div>

@@ -4,6 +4,7 @@
 @import "./dashboard.css";
 @import "./eco-oasis-gr.css";
 @import "./triggers.css";
+@import "./buoy_manager.css";
 
 /* Alerts and form errors used by phx.new */
 .alert {
