@@ -277,4 +277,110 @@ defmodule Lurra.Events do
   def count_new_warnings(current_time) do
     Repo.one(from p in Warning, select: count(p.id), where: p.date > ^current_time)
   end
+
+  alias Lurra.Events.Lablog
+
+  @doc """
+  Returns the list of lablogs.
+
+  ## Examples
+
+      iex> list_lablogs()
+      [%Lablog{}, ...]
+
+  """
+  def list_lablogs do
+    Repo.all(Lablog)
+  end
+
+  def list_lablogs_limit(limit) do
+    query = from(e in Lablog, limit: ^limit, order_by: [desc: e.timestamp])
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets a single lablog.
+
+  Raises `Ecto.NoResultsError` if the Lablog does not exist.
+
+  ## Examples
+
+      iex> get_lablog!(123)
+      %Lablog{}
+
+      iex> get_lablog!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_lablog!(id), do: Repo.get!(Lablog, id)
+
+  @doc """
+  Creates a lablog.
+
+  ## Examples
+
+      iex> create_lablog(%{field: value})
+      {:ok, %Lablog{}}
+
+      iex> create_lablog(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_lablog(attrs \\ %{}) do
+    %Lablog{}
+    |> Lablog.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a lablog.
+
+  ## Examples
+
+      iex> update_lablog(lablog, %{field: new_value})
+      {:ok, %Lablog{}}
+
+      iex> update_lablog(lablog, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_lablog(%Lablog{} = lablog, attrs) do
+    lablog
+    |> Lablog.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a lablog.
+
+  ## Examples
+
+      iex> delete_lablog(lablog)
+      {:ok, %Lablog{}}
+
+      iex> delete_lablog(lablog)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_lablog(%Lablog{} = lablog) do
+    Repo.delete(lablog)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking lablog changes.
+
+  ## Examples
+
+      iex> change_lablog(lablog)
+      %Ecto.Changeset{data: %Lablog{}}
+
+  """
+  def change_lablog(%Lablog{} = lablog, attrs \\ %{}) do
+    Lablog.changeset(lablog, attrs)
+  end
+
+  def query_lablogs(from_time, to_time) do
+    query = from(e in Lablog, where: e.timestamp > ^from_time and e.timestamp < ^to_time , order_by: [asc: e.timestamp])
+    Repo.all(query)
+  end
 end

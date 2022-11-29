@@ -6,6 +6,7 @@ defmodule LurraWeb.Graph.DownloadData do
   alias Surface.Components.Form.Field
   alias Surface.Components.Form.Label
   alias Surface.Components.Form.DateTimeLocalInput
+  alias Surface.Components.Form.Checkbox
   alias Surface.Components.Link
 
   alias LurraWeb.Router.Helpers, as: Routes
@@ -24,10 +25,11 @@ defmodule LurraWeb.Graph.DownloadData do
       socket
       |> assign(:from, from)
       |> assign(:to, to)
+      |> assign(:download_lablog, false)
       |> assign(:device_id, assigns.device_id)
       |> assign(:sensor_type, assigns.sensor_type)
       |> assign(:timezone, assigns.timezone)
-      |> assign(:download_url, build_url(assigns.device_id, assigns.sensor_type, from, to, assigns.timezone))
+      |> assign(:download_url, build_url(assigns.device_id, assigns.sensor_type, from, to, assigns.timezone, false))
     }
   end
 
@@ -35,16 +37,17 @@ defmodule LurraWeb.Graph.DownloadData do
     {:noreply, socket}
   end
 
-  def handle_event("change", %{"dates" => %{"from" => from, "to" => to}}, socket) do
+  def handle_event("change", %{"dates" => %{"from" => from, "to" => to, "download_lablog" => download_lablog_str}}, socket) do
     pfrom = parse_date(from, socket.assigns.timezone)
     pto = parse_date(to, socket.assigns.timezone)
-
+    download_lablog = String.to_existing_atom(download_lablog_str)
     {
       :noreply,
       socket
       |> assign(:from, pfrom)
       |> assign(:to, pto)
-      |> assign(:download_url, build_url(socket.assigns.device_id, socket.assigns.sensor_type, pfrom, pto, socket.assigns.timezone))
+      |> assign(:download_lablog, download_lablog)
+      |> assign(:download_url, build_url(socket.assigns.device_id, socket.assigns.sensor_type, pfrom, pto, socket.assigns.timezone, download_lablog))
     }
   end
 
@@ -61,7 +64,7 @@ defmodule LurraWeb.Graph.DownloadData do
     Timex.Timezone.convert(DateTime.utc_now(), timezone)
   end
 
-  defp build_url(device_id, sensor_type, from, to, timezone) do
-    Routes.download_data_path(LurraWeb.Endpoint, :index, device_id, sensor_type, from: DateTime.to_unix(from, :milliseconds), to: DateTime.to_unix(to, :milliseconds), timezone: timezone)
+  defp build_url(device_id, sensor_type, from, to, timezone, download_lablog) do
+    Routes.download_data_path(LurraWeb.Endpoint, :index, device_id, sensor_type, from: DateTime.to_unix(from, :milliseconds), to: DateTime.to_unix(to, :milliseconds), timezone: timezone, lablog: download_lablog)
   end
 end

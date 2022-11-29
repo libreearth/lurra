@@ -8,7 +8,10 @@
       <Label>To</Label>
       <DateTimeLocalInput value={@to}/>
     </Field>
-
+    <Field name={:download_lablog}>
+      <Label>Include Lab-Log</Label>
+      <Checkbox value={@download_lablog}/>
+    </Field>
     <Link label="Download data in CSV" to={@download_url}/>
   </Form>
 </div>

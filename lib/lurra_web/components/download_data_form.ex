@@ -2,7 +2,7 @@ defmodule LurraWeb.Components.DownloadDataForm do
   use Surface.LiveComponent
 
   alias Surface.Components.Form
-  alias Surface.Components.Form.{Label, Field, DateTimeLocalInput, NumberInput}
+  alias Surface.Components.Form.{Label, Field, DateTimeLocalInput, NumberInput, Checkbox}
   alias Surface.Components.Link
   alias LurraWeb.Components.EcoObserver
 
@@ -16,6 +16,7 @@ defmodule LurraWeb.Components.DownloadDataForm do
   prop readings, :map, required: true
   data interval, :integer, default: 20
   data sensors, :list, default: []
+  data download_lablog, :boolean, default: false
 
   def update(assigns, socket) do
     from = Map.get(socket.assigns,:from) || get_from(@initial_time, assigns.timezone)
@@ -25,23 +26,25 @@ defmodule LurraWeb.Components.DownloadDataForm do
       socket
       |> assign(:from, from)
       |> assign(:to, to)
-      |> assign(:download_url, build_url(socket.assigns.sensors, from, to, socket.assigns.interval, assigns.timezone))
+      |> assign(:download_url, build_url(socket.assigns.sensors, from, to, socket.assigns.interval, assigns.timezone, socket.assigns.download_lablog))
       |> assign(:observers, assigns.observers)
       |> assign(:readings, assigns.readings)
       |> assign(:timezone, assigns.timezone)
     }
   end
 
-  def handle_event("change", %{"download" => %{"from" => from, "to" => to, "interval" => interval} = form_params}, socket) do
+  def handle_event("change", %{"download" => %{"from" => from, "to" => to, "interval" => interval, "download_lablog" => download_lablog_str} = form_params}, socket) do
     pfrom = parse_date(from, socket.assigns.timezone)
     pto = parse_date(to, socket.assigns.timezone)
     sensors_list = build_sensors_list(form_params)
+    download_lablog = String.to_existing_atom(download_lablog_str)
     {
       :noreply,
       socket
       |> assign(:from, pfrom)
       |> assign(:to, pto)
-      |> assign(:download_url, build_url(sensors_list, pfrom, pto, socket.assigns.interval, socket.assigns.timezone))
+      |> assign(:download_lablog, download_lablog)
+      |> assign(:download_url, build_url(sensors_list, pfrom, pto, socket.assigns.interval, socket.assigns.timezone, download_lablog))
       |> assign(:sensors, sensors_list)
       |> assign(:interval, interval)
     }
@@ -73,8 +76,8 @@ defmodule LurraWeb.Components.DownloadDataForm do
     Timex.Timezone.convert(DateTime.utc_now(), timezone)
   end
 
-  defp build_url(sensors, from, to, interval, timezone) do
-    Routes.download_multiple_data_path(LurraWeb.Endpoint, :index, interval: interval, sensors: sensors |> Enum.map(& String.replace(&1, "sensor-", "")) |> Enum.join(","), from: DateTime.to_unix(from, :millisecond), to: DateTime.to_unix(to, :millisecond), timezone: timezone)
+  defp build_url(sensors, from, to, interval, timezone, download_lablog) do
+    Routes.download_multiple_data_path(LurraWeb.Endpoint, :index, interval: interval, sensors: sensors |> Enum.map(& String.replace(&1, "sensor-", "")) |> Enum.join(","), from: DateTime.to_unix(from, :millisecond), to: DateTime.to_unix(to, :millisecond), timezone: timezone, lablog: download_lablog)
   end
 
 end

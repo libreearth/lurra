@@ -37,4 +37,20 @@ defmodule Lurra.EventsFixtures do
 
     warning
   end
+
+  @doc """
+  Generate a lablog.
+  """
+  def lablog_fixture(attrs \\ %{}) do
+    {:ok, lablog} =
+      attrs
+      |> Enum.into(%{
+        payload: "some payload",
+        timestamp: ~U[2022-11-27 16:44:00Z],
+        user: "some user"
+      })
+      |> Lurra.Events.create_lablog()
+
+    lablog
+  end
 end

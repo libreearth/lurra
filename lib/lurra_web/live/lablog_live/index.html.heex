@@ -1,0 +1,43 @@
+<h1>Listing Lablogs</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.lablog_index_path(@socket, :index)}>
+    <.live_component
+      module={LurraWeb.LablogLive.FormComponent}
+      id={@lablog.id || :new}
+      title={@page_title}
+      action={@live_action}
+      lablog={@lablog}
+      email = {@email}
+      return_to={Routes.lablog_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<span><%= live_patch "New Lablog", to: Routes.lablog_index_path(@socket, :new) %></span>
+<table>
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Payload</th>
+      <th>User</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="lablogs">
+    <%= for lablog <- @lablogs do %>
+      <tr id={"lablog-#{lablog.id}"}>
+        <td><%= lablog.timestamp|> DateTime.from_unix!(:millisecond) |> DateTime.to_string |> String.replace("Z", " UTC") %></td>
+        <td><%= lablog.payload %></td>
+        <td><%= lablog.user %></td>
+        <td>
+          <span><%= live_redirect "Show", to: Routes.lablog_show_path(@socket, :show, lablog) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: lablog.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Lablog", to: Routes.lablog_index_path(@socket, :new) %></span>

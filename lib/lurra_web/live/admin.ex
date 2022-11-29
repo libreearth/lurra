@@ -18,6 +18,7 @@ defmodule LurraWeb.Admin do
         <li><Link label={"Eco-oases"} to={Routes.eco_oasis_index_path(Endpoint, :index)} /></li>
         <li><Link label={"Last Events"} to={Routes.event_index_path(Endpoint, :index)} /></li>
         <li><Link label={"Buoy Manager"} to={ Routes.live_path(Endpoint, LurraWeb.BuoySerial)} /></li>
+        <li><Link label={"Lab Logs"} to={Routes.lablog_index_path(Endpoint, :index)} /></li>
       </ul>
     </div>
     """

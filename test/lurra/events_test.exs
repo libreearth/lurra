@@ -122,4 +122,62 @@ defmodule Lurra.EventsTest do
       assert %Ecto.Changeset{} = Events.change_warning(warning)
     end
   end
+
+  describe "lablogs" do
+    alias Lurra.Events.Lablog
+
+    import Lurra.EventsFixtures
+
+    @invalid_attrs %{payload: nil, timestamp: nil, user: nil}
+
+    test "list_lablogs/0 returns all lablogs" do
+      lablog = lablog_fixture()
+      assert Events.list_lablogs() == [lablog]
+    end
+
+    test "get_lablog!/1 returns the lablog with given id" do
+      lablog = lablog_fixture()
+      assert Events.get_lablog!(lablog.id) == lablog
+    end
+
+    test "create_lablog/1 with valid data creates a lablog" do
+      valid_attrs = %{payload: "some payload", timestamp: ~U[2022-11-27 16:44:00Z], user: "some user"}
+
+      assert {:ok, %Lablog{} = lablog} = Events.create_lablog(valid_attrs)
+      assert lablog.payload == "some payload"
+      assert lablog.timestamp == ~U[2022-11-27 16:44:00Z]
+      assert lablog.user == "some user"
+    end
+
+    test "create_lablog/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Events.create_lablog(@invalid_attrs)
+    end
+
+    test "update_lablog/2 with valid data updates the lablog" do
+      lablog = lablog_fixture()
+      update_attrs = %{payload: "some updated payload", timestamp: ~U[2022-11-28 16:44:00Z], user: "some updated user"}
+
+      assert {:ok, %Lablog{} = lablog} = Events.update_lablog(lablog, update_attrs)
+      assert lablog.payload == "some updated payload"
+      assert lablog.timestamp == ~U[2022-11-28 16:44:00Z]
+      assert lablog.user == "some updated user"
+    end
+
+    test "update_lablog/2 with invalid data returns error changeset" do
+      lablog = lablog_fixture()
+      assert {:error, %Ecto.Changeset{}} = Events.update_lablog(lablog, @invalid_attrs)
+      assert lablog == Events.get_lablog!(lablog.id)
+    end
+
+    test "delete_lablog/1 deletes the lablog" do
+      lablog = lablog_fixture()
+      assert {:ok, %Lablog{}} = Events.delete_lablog(lablog)
+      assert_raise Ecto.NoResultsError, fn -> Events.get_lablog!(lablog.id) end
+    end
+
+    test "change_lablog/1 returns a lablog changeset" do
+      lablog = lablog_fixture()
+      assert %Ecto.Changeset{} = Events.change_lablog(lablog)
+    end
+  end
 end

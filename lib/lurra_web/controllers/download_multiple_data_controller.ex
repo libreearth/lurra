@@ -4,7 +4,7 @@ defmodule LurraWeb.DownloadMultipleDataController do
   alias Lurra.Events
   alias Lurra.Monitoring
 
-  def index(conn, %{"sensors" => sensors,"from" => from_time, "to" => to_time, "interval" => interval, "timezone" => timezone}) do
+  def index(conn, %{"sensors" => sensors,"from" => from_time, "to" => to_time, "interval" => interval, "timezone" => timezone, "lablog" => download_lablog}) do
 
     ch_conn =
       conn
@@ -13,7 +13,7 @@ defmodule LurraWeb.DownloadMultipleDataController do
       |> send_chunked(:ok)
 
 
-      create_csv_stream(sensors, from_time, to_time, interval, timezone)
+      create_csv_stream(sensors, from_time, to_time, interval, timezone, download_lablog)
       |> Enum.reduce_while(ch_conn, fn chunk, conn ->
         case Plug.Conn.chunk(conn, chunk) do
           {:ok, conn} ->
@@ -28,10 +28,7 @@ defmodule LurraWeb.DownloadMultipleDataController do
     ch_conn
   end
 
-  defp create_csv_stream(sensors, from_time, to_time, interval, timezone) do
-    {_days, {hours, minutes, _secs}} =
-      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
-
+  defp create_csv_stream(sensors, from_time, to_time, interval, timezone, "true") do
     sensors =
       sensors
       |> String.split(",")
@@ -44,12 +41,41 @@ defmodule LurraWeb.DownloadMultipleDataController do
 
     time_values = Enum.to_list(String.to_integer(from_time)..String.to_integer(to_time)//String.to_integer(interval)*1000)
 
-    header =
-      Stream.unfold(
-        "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});#{header_from_sensor_tuple(sensors)}\n",
-        &String.next_codepoint/1
-      )
+    header = create_header(timezone, sensors, "true")
 
+    lablogs = Events.query_lablogs(from_time, to_time)
+
+    body =
+      time_values
+      |> Stream.transform({events, 0}, fn t, {events, old_t} ->
+        lablog_str =
+          lablogs
+          |> Enum.filter(fn lablog -> lablog.timestamp >= old_t and lablog.timestamp < t end)
+          |> Enum.map(fn lablog -> "#{lablog.payload} - #{lablog.user}" end)
+          |> Enum.join(", ")
+
+        {values, new_events_list} = find_interpolated_values(t, events)
+        {[[format_date(t, timezone) | values] ++ [lablog_str]], {new_events_list, t}}
+      end)
+      |> CSV.encode(separator: ?;, delimiter: "\n")
+
+    Stream.concat(header, body)
+  end
+
+  defp create_csv_stream(sensors, from_time, to_time, interval, timezone, download_lablog) do
+    sensors =
+      sensors
+      |> String.split(",")
+      |> Enum.map(& String.split(&1, "-") |> List.to_tuple())
+      |> Enum.map(&find_observer_sensor_tuple/1)
+
+    events = sensors
+      |> to_device_id_type_tuple()
+      |> Enum.map(& query_events(&1, from_time, to_time))
+
+    time_values = Enum.to_list(String.to_integer(from_time)..String.to_integer(to_time)//String.to_integer(interval)*1000)
+
+    header = create_header(timezone, sensors, download_lablog)
 
     body =
       time_values
@@ -60,6 +86,26 @@ defmodule LurraWeb.DownloadMultipleDataController do
       |> CSV.encode(separator: ?;, delimiter: "\n")
 
     Stream.concat(header, body)
+  end
+
+  defp create_header(timezone, sensors, "true") do
+    {_days, {hours, minutes, _secs}} =
+      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
+
+    Stream.unfold(
+      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});#{header_from_sensor_tuple(sensors)};Lablog\n",
+      &String.next_codepoint/1
+    )
+  end
+
+  defp create_header(timezone, sensors, _download_lablog) do
+    {_days, {hours, minutes, _secs}} =
+      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
+
+    Stream.unfold(
+      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});#{header_from_sensor_tuple(sensors)}\n",
+      &String.next_codepoint/1
+    )
   end
 
   defp find_interpolated_values(time, events_list) do

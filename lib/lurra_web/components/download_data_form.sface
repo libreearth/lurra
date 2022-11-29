@@ -12,6 +12,10 @@
         <Label>Interval step (seconds)</Label>
           <NumberInput value={@interval}/>
       </Field>
+      <Field name={:download_lablog}>
+        <Label>Include Lab-Log</Label>
+        <Checkbox value={@download_lablog}/>
+      </Field>
       <Link to={@download_url}><i class="fa fa-download"/> Download CSV</Link>
     </div>
     <div class="container dashboard"> 
