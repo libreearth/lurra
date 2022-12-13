@@ -4,6 +4,10 @@
     stroke-width: 2px;
 }
 
+.gr-lablog circle {
+    fill: red;
+}
+
 .graph-title {
     display: flex;
     flex-direction: row;

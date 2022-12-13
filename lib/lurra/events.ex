@@ -298,6 +298,11 @@ defmodule Lurra.Events do
     Repo.all(query)
   end
 
+  def list_lablogs(from_time, to_time) do
+    query = from(e in Lablog, where: e.timestamp > ^from_time and e.timestamp < ^to_time, order_by: [asc: e.timestamp])
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single lablog.
 

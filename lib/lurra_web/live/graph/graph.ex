@@ -128,7 +128,15 @@ defmodule LurraWeb.Graph do
 
   def handle_event("map-created", %{"from_time" => from_time, "to_time" => to_time}, socket) do
     events = Events.list_events(socket.assigns.observer.device_id, "#{socket.assigns.sensor.sensor_type}", from_time, to_time)
-    {:reply, %{"events" => events |> Enum.map(fn event -> %{"time" => event.timestamp, "value" => parse_float(event.payload)} end)}, socket}
+    lablogs = Events.list_lablogs(from_time, to_time)
+    {
+      :reply,
+      %{
+        "events" => events |> Enum.map(fn event -> %{"time" => event.timestamp, "value" => parse_float(event.payload)} end),
+        "lablogs" => lablogs |> Enum.map(fn lablog -> %{"time" => lablog.timestamp, "user" => lablog.user, "payload" => lablog.payload} end)
+      },
+      socket
+    }
   end
 
   def handle_event("show-download-dialog", _params, socket) do
