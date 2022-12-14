@@ -126,13 +126,16 @@ defmodule LurraWeb.Graph do
   end
 
 
-  def handle_event("map-created", %{"from_time" => from_time, "to_time" => to_time}, socket) do
-    events = Events.list_events(socket.assigns.observer.device_id, "#{socket.assigns.sensor.sensor_type}", from_time, to_time)
+  def handle_event("map-created", %{"from_time" => from_time, "to_time" => to_time, "bin" => bin}, socket) do
+    events = Events.list_events_average(socket.assigns.observer.device_id, "#{socket.assigns.sensor.sensor_type}", from_time, to_time, bin)
     lablogs = Events.list_lablogs(from_time, to_time)
     {
       :reply,
       %{
-        "events" => events |> Enum.map(fn event -> %{"time" => event.timestamp, "value" => parse_float(event.payload)} end),
+        "events" =>
+          events
+          |> Enum.map(fn event -> [%{"time" => event.timestamp, "value" => parse_float(event.payload_min)}, %{"time" => event.timestamp, "value" => parse_float(event.payload_max)}] end)
+          |> List.flatten(),
         "lablogs" => lablogs |> Enum.map(fn lablog -> %{"time" => lablog.timestamp, "user" => lablog.user, "payload" => lablog.payload} end)
       },
       socket
@@ -164,6 +167,7 @@ defmodule LurraWeb.Graph do
     {:noreply,socket}
   end
 
+  defp parse_float(f) when is_float(f), do: f
   defp parse_float(text) do
     {n, _} = Float.parse(text)
     n

@@ -2,6 +2,7 @@
     fill: none;
     stroke: blue;
     stroke-width: 2px;
+    stroke-linejoin: miter;
 }
 
 .gr-lablog circle {

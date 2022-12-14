@@ -33,6 +33,25 @@ defmodule Lurra.Events do
     Repo.all(query)
   end
 
+  #SELECT e0."device_id", e0."type", avg(e0."payload"), min(e0."timestamp") FROM "events" AS e0 WHERE ((((e0."device_id" = '5aef5251-7158-4b56-b66c-e4e83fd8650d') AND (e0."type" = '15')) AND (e0."timestamp" >= 1671016502030)) AND (e0."timestamp" <= 1671020102030)) GROUP BY e0."timestamp" DIV 6000;
+  def list_events_average(device_id, sensor_type, from_time, to_time, bin) do
+    query =
+      from(e in Event,
+        where:
+            e.device_id == ^device_id and e.type == ^sensor_type and e.timestamp >= ^from_time and
+            e.timestamp <= ^to_time,
+        select: %{
+          device_id: ^device_id,
+          type: ^sensor_type,
+          payload_max: max(type(e.payload, :float)),
+          payload_min: min(type(e.payload, :float)),
+          timestamp: min(e.timestamp)
+        },
+        group_by: fragment("DIV(?,?)", e.timestamp, ^bin)
+      )
+    Repo.all(query)
+  end
+
   def stream_events(device_id, sensor_type, from_time, to_time) do
     query = from(e in Event, where: e.timestamp > ^from_time and e.timestamp < ^to_time and e.device_id == ^device_id and e.type == ^sensor_type, order_by: [asc: e.timestamp])
     Repo.stream(query)
