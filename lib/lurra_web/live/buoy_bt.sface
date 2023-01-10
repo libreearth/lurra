@@ -1,5 +1,5 @@
 <div id="buoy_bt" :hook="BuoyBt" class="container buoy_manager">
-  <h2> Buoy manager </h2>
+  <h2> Buoy management </h2>
   {#if @connected}
     <div class="buoy_info">
       🟢Connected 
@@ -7,6 +7,10 @@
         <li><strong>UID:</strong> {@buoy_uid}</li>  
         <li><strong>Date:</strong> {@buoy_date} UTC</li>
         <li><strong>Sensors:</strong> {print_sensors(@buoy_sensors)}</li>
+        <li><strong>Battery:</strong> {@battery}</li>
+        <li><strong>Buoy data size:</strong> {@size} bytes</li>
+        <li><strong>Extracted data:</strong> {@extracted_data} bytes</li>
+        <li id="download_text"></li>
       </ul>
     </div>
   {#else}
@@ -14,10 +18,19 @@
       🔴Disconected
     </div>
   {/if}
-  <button id="connect_button" disabled={@connected}>Connect buoy</button>
-  <button id="set_time_button" disabled={not @connected}>Set Time</button>
-  <button id="upload_button" disabled={not @connected}>Upload data</button>
-  <button id="download_button" disabled={not @connected}>Download data as csv</button>
-  <button id="clear_button" disabled={not @connected}>Clear data</button>
-  <button id="disconnect_and_log_button" disabled={not @connected}>Disconnect & Log</button>
+  <h3>Buoy</h3>
+  <div>
+    <button id="connect_button" disabled={@connected}>Connect buoy</button>
+    <button id="set_time_button" disabled={not @connected}>Set Time</button>
+    <button id="clear_button" disabled={not @connected}>Clear buoy data</button>
+    <button id="disconnect_and_log_button" disabled={not @connected}>Disconnect & Log</button>
+  </div>
+  <h3>Data</h3>
+  <div>
+    <button id="extract_button" disabled={not @connected}>Extract data</button>
+    <button id="clear_extracted" disabled={not @connected or @extracted_data == 0}>Remove Extracted data</button>
+    <button id="upload_button" disabled={not @connected or @extracted_data == 0}>Upload data</button>
+    <button id="download_button" disabled={not @connected or @extracted_data == 0}>Download data as csv</button>
+  </div>
+  
 </div>

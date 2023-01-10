@@ -23,6 +23,7 @@ defmodule Lurra.Application do
       Lurra.ObserverConnectors.Mqtt,
       Lurra.Events.ReadingsCache,
       Lurra.Triggers.Server,
+      Lurra.Core.BuoyData,
       {Registry, keys: :unique, name: Registry.EcoOasis},
       Lurra.Core.EcoOasis.Server.ServerSupervisor,
       {Task, &Lurra.Core.EcoOasis.Server.ServerSupervisor.initial_eco_oasis/0}
