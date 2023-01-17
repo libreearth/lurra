@@ -47,7 +47,8 @@ defmodule Lurra.Events do
           payload_min: min(type(e.payload, :float)),
           timestamp: min(e.timestamp)
         },
-        group_by: fragment("DIV(?,?)", e.timestamp, ^bin)
+        group_by: fragment("DIV(?,?)", e.timestamp, ^bin),
+        order_by: min(e.timestamp)
       )
     Repo.all(query)
   end
