@@ -67,7 +67,9 @@ defmodule Lurra.Events.ReadingsCache do
   end
 
   defp parse_int(text) do
-    {n, _} = Integer.parse(text)
-    n
+    case Integer.parse(text) do
+      :error -> -1
+      {n, _} -> n
+    end
   end
 end
