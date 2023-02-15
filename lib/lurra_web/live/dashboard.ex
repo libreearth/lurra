@@ -13,7 +13,7 @@ defmodule LurraWeb.Dashboard do
     if connected?(socket) do
       Endpoint.subscribe(@events_topic)
     end
-    observers = Lurra.Monitoring.list_observers()
+    observers = Lurra.Monitoring.list_observers_not_archived()
     socket = socket
     |> assign(:observers, observers)
     |> assign(:readings, initial_readings())

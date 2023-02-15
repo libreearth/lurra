@@ -16,6 +16,7 @@
       <th>Device ID</th>
       <th>Type</th>
       <th>Sensors</th>
+      <th>Active</th>
       <th></th>
     </tr>
   </thead>
@@ -26,9 +27,15 @@
         <td><%= observer.device_id %></td>
         <td><%= observer.type %></td>
         <td><%= observer.sensors |> Enum.map(& &1.name) |> Enum.join(", ") %></td>
+        <td><%= if observer.archived do "📁" else "✔" end %></td>
         <td>
           <span><%= live_redirect "Show", to: Routes.observer_show_path(@socket, :show, observer) %></span>
           <span><%= live_patch "Edit", to: Routes.observer_index_path(@socket, :edit, observer) %></span>
+          <%= if observer.archived do %>
+            <span><%= link "Unarchive", to: "#", phx_click: "unarchive", phx_value_id: observer.id, data: [confirm: "Are you sure?"] %></span>
+          <% else %>
+            <span><%= link "Archive", to: "#", phx_click: "archive", phx_value_id: observer.id, data: [confirm: "Are you sure?"] %></span>
+          <% end %>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: observer.id, data: [confirm: "Are you sure?"] %></span>
           <span><%= link "Reboot", to: "#", phx_click: "reboot", phx_value_id: observer.device_id, data: [confirm: "Are you sure?"] %></span>
         </td>

@@ -9,7 +9,7 @@ defmodule LurraWeb.ObserverLocationLive.Index do
   alias LurraWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do
-    observers = Lurra.Monitoring.list_observers()
+    observers = Lurra.Monitoring.list_observers_ordered()
     socket = socket
     |> assign(:observers, observers)
 

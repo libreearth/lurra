@@ -85,7 +85,7 @@ defmodule LurraWeb.TriggerLive.FormComponent do
 
   defp find_observer(device_id, observers), do: Enum.find(observers, fn observer -> observer.device_id == device_id end)
 
-  defp list_observers(), do: Monitoring.list_observers() |> observers_to_options()
+  defp list_observers(), do: Monitoring.list_observers_ordered() |> observers_to_options()
 
   defp observers_to_options(observer_list), do: Enum.map(observer_list, fn observer -> {observer.name, observer.device_id} end)
 

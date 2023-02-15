@@ -36,6 +36,12 @@
     <%= @observer.timezone %>
   </li>
 
+  <li>
+    <strong>Archived:</strong>
+    <%= @observer.archived %>
+  </li>
+
+
 </ul>
 
 <span><%= live_patch "Edit", to: Routes.observer_show_path(@socket, :edit, @observer), class: "button" %></span> |
