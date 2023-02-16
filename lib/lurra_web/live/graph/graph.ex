@@ -167,6 +167,7 @@ defmodule LurraWeb.Graph do
     {:noreply,socket}
   end
 
+  defp parse_float(nil), do: 0
   defp parse_float(f) when is_float(f), do: f
   defp parse_float(text) do
     {n, _} = Float.parse(text)
