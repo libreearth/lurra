@@ -5,6 +5,14 @@
     stroke-linejoin: miter;
 }
 
+.gr-sec-data path {
+    fill: none;
+    stroke: green;
+    stroke-width: 2px;
+    stroke-linejoin: miter;
+}
+
+
 .gr-lablog circle {
     fill: red;
 }

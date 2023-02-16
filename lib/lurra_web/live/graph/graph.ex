@@ -14,7 +14,7 @@ defmodule LurraWeb.Graph do
   alias LurraWeb.Graph.DownloadData
   alias LurraWeb.Graph.VerticalLimits
   alias LurraWeb.Graph.Ruler
-
+  alias LurraWeb.Graph.SelectSecondarySensor
 
   @events_topic "events"
   @time_options [
@@ -74,6 +74,10 @@ defmodule LurraWeb.Graph do
     end
   end
 
+  def handle_info({:add_sensor, device_id, sensor_type}, socket) do
+    {:noreply, push_event(socket, "add-secondary-data", %{"device_id" => device_id, "sensor_type" => sensor_type})}
+  end
+
   def handle_info(:graph_updated, socket) do
     graph = Lurra.Graphs.get_graph(socket.assigns.observer.device_id, socket.assigns.sensor.sensor_type)
     {
@@ -126,17 +130,29 @@ defmodule LurraWeb.Graph do
   end
 
 
+  def handle_event("map-created", %{"sec_device_id" => sec_device_id, "sec_sensor_type" => sec_sensor_type, "from_time" => from_time, "to_time" => to_time, "bin" => bin}, socket) do
+    events = Events.list_events_average(socket.assigns.observer.device_id, "#{socket.assigns.sensor.sensor_type}", from_time, to_time, bin)
+    sec_events = Events.list_events_average(sec_device_id, sec_sensor_type, from_time, to_time, bin)
+    lablogs = Events.list_lablogs(from_time, to_time)
+    {
+      :reply,
+      %{
+        "events" => events_to_map(events),
+        "sec_events" => events_to_map(sec_events),
+        "lablogs" => lablogs_to_map(lablogs)
+      },
+      socket
+    }
+  end
+
   def handle_event("map-created", %{"from_time" => from_time, "to_time" => to_time, "bin" => bin}, socket) do
     events = Events.list_events_average(socket.assigns.observer.device_id, "#{socket.assigns.sensor.sensor_type}", from_time, to_time, bin)
     lablogs = Events.list_lablogs(from_time, to_time)
     {
       :reply,
       %{
-        "events" =>
-          events
-          |> Enum.map(fn event -> [%{"time" => event.timestamp, "value" => parse_float(event.payload_min)}, %{"time" => event.timestamp, "value" => parse_float(event.payload_max)}] end)
-          |> List.flatten(),
-        "lablogs" => lablogs |> Enum.map(fn lablog -> %{"time" => lablog.timestamp, "user" => lablog.user, "payload" => lablog.payload} end)
+        "events" => events_to_map(events),
+        "lablogs" => lablogs_to_map(lablogs)
       },
       socket
     }
@@ -149,6 +165,16 @@ defmodule LurraWeb.Graph do
 
   def handle_event("show-ruler-dialog", _params, socket) do
     LurraWeb.Components.Dialog.show("ruler-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("show-add-secondary-sensor-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.show("add-secondary-sensor-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("close-add-secondary-sensor-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.hide("add-secondary-sensor-dialog")
     {:noreply, socket}
   end
 
@@ -165,6 +191,14 @@ defmodule LurraWeb.Graph do
   def handle_event("close-vertical-dialog", _params, socket) do
     LurraWeb.Components.Dialog.hide("vertical-limits-dialog")
     {:noreply,socket}
+  end
+
+  defp lablogs_to_map(lablogs), do: lablogs |> Enum.map(fn lablog -> %{"time" => lablog.timestamp, "user" => lablog.user, "payload" => lablog.payload} end)
+
+  defp events_to_map(events) do
+    events
+      |> Enum.map(fn event -> [%{"time" => event.timestamp, "value" => parse_float(event.payload_min)}, %{"time" => event.timestamp, "value" => parse_float(event.payload_max)}] end)
+      |> List.flatten()
   end
 
   defp parse_float(nil), do: 0

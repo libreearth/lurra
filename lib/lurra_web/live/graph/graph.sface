@@ -16,6 +16,7 @@
         </div>
         <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit} data-rulerval={@ruler_value}></svg>
         <div class="graph-button">
+            <i class="fa fa-plus" :on-click="show-add-secondary-sensor-dialog" title="Add secondary sensor"></i>
             <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
             <i class="fa fa-ruler" :on-click="show-ruler-dialog" title="Set ruler"></i>
             <i class="fa fa-download" :on-click="show-download-dialog" title="Download data"></i>
@@ -34,4 +35,7 @@
 </Dialog>
 <Dialog id="ruler-dialog" title="Ruler value" show={false} hideEvent="close-ruler-dialog">
     <Ruler id="ruler" value={@ruler_value}/>
+</Dialog>
+<Dialog id="add-secondary-sensor-dialog" title="Select Secondary Sensor" show={false} hideEvent="close-add-secondary-sensor-dialog">
+    <SelectSecondarySensor id="add-secondary-sensor" unit={@sensor.unit}/>
 </Dialog>

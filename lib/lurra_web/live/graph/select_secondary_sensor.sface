@@ -1,0 +1,6 @@
+<div>
+  <Form for={:selector} class="long-field" submit="save">
+    <Select options={sensors_options(@unit)}/>
+    <Submit label="Add" /> 
+  </Form>
+</div>
