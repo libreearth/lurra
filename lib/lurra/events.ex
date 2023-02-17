@@ -53,8 +53,14 @@ defmodule Lurra.Events do
     Repo.all(query)
   end
 
-  def stream_events(device_id, sensor_type, from_time, to_time) do
+  def stream_events(device_id, sensor_type, nil, nil, from_time, to_time) do
     query = from(e in Event, where: e.timestamp > ^from_time and e.timestamp < ^to_time and e.device_id == ^device_id and e.type == ^sensor_type, order_by: [asc: e.timestamp])
+    Repo.stream(query)
+  end
+
+  def stream_events(device_id, sensor_type, sec_device_id, sec_sensor_type, from_time, to_time) do
+    IO.inspect sec_device_id
+    query = from(e in Event, where: e.timestamp > ^from_time and e.timestamp < ^to_time and ((e.device_id == ^device_id and e.type == ^sensor_type) or (e.device_id == ^sec_device_id and e.type == ^sec_sensor_type)), order_by: [asc: e.timestamp])
     Repo.stream(query)
   end
 

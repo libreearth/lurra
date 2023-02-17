@@ -28,7 +28,14 @@
     </div>
 </div>
 <Dialog id="download-data-dialog" title="Download data" show={false} hideEvent="close-download-dialog">
-    <DownloadData id="download-data" time={@time} timezone={@timezone} device_id={@observer.device_id} sensor_type={@sensor.sensor_type}/>
+    <DownloadData id="download-data" 
+        time={@time} 
+        timezone={@timezone} 
+        device_id={@observer.device_id} 
+        sensor_type={@sensor.sensor_type}
+        sec_device_id={@sec_observer.device_id}
+        sec_sensor_type={@sec_observer.sensor_type}
+        />
 </Dialog>
 <Dialog id="vertical-limits-dialog" title="Vertical limits" show={false} hideEvent="close-vertical-dialog">
     <VerticalLimits id="vertical-limits" max={@max_value} min={@min_value} device_id={@observer.device_id} sensor_type={@sensor.sensor_type}/>

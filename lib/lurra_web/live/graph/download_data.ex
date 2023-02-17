@@ -15,6 +15,8 @@ defmodule LurraWeb.Graph.DownloadData do
   prop timezone, :string, required: true
   prop device_id, :string, required: true
   prop sensor_type, :string, required: true
+  prop sec_device_id, :string, required: false
+  prop sec_sensor_type, :string, required: false
 
   def update(assigns, socket) do
     from = get_from(assigns.time, assigns.timezone)
@@ -28,8 +30,10 @@ defmodule LurraWeb.Graph.DownloadData do
       |> assign(:download_lablog, false)
       |> assign(:device_id, assigns.device_id)
       |> assign(:sensor_type, assigns.sensor_type)
+      |> assign(:sec_device_id, assigns.sec_device_id)
+      |> assign(:sec_sensor_type, assigns.sec_sensor_type)
       |> assign(:timezone, assigns.timezone)
-      |> assign(:download_url, build_url(assigns.device_id, assigns.sensor_type, from, to, assigns.timezone, false))
+      |> assign(:download_url, build_url(assigns.device_id, assigns.sensor_type, assigns.sec_device_id, assigns.sec_sensor_type, from, to, assigns.timezone, false))
     }
   end
 
@@ -47,7 +51,7 @@ defmodule LurraWeb.Graph.DownloadData do
       |> assign(:from, pfrom)
       |> assign(:to, pto)
       |> assign(:download_lablog, download_lablog)
-      |> assign(:download_url, build_url(socket.assigns.device_id, socket.assigns.sensor_type, pfrom, pto, socket.assigns.timezone, download_lablog))
+      |> assign(:download_url, build_url(socket.assigns.device_id, socket.assigns.sensor_type, socket.assigns.sec_device_id, socket.assigns.sec_sensor_type, pfrom, pto, socket.assigns.timezone, download_lablog))
     }
   end
 
@@ -64,7 +68,14 @@ defmodule LurraWeb.Graph.DownloadData do
     Timex.Timezone.convert(DateTime.utc_now(), timezone)
   end
 
-  defp build_url(device_id, sensor_type, from, to, timezone, download_lablog) do
-    Routes.download_data_path(LurraWeb.Endpoint, :index, device_id, sensor_type, from: DateTime.to_unix(from, :milliseconds), to: DateTime.to_unix(to, :milliseconds), timezone: timezone, lablog: download_lablog)
+  defp build_url(device_id, sensor_type, sec_device_id, sec_sensor_type, from, to, timezone, download_lablog) do
+    Routes.download_data_path(LurraWeb.Endpoint, :index, device_id, sensor_type,
+      from: DateTime.to_unix(from, :milliseconds),
+      to: DateTime.to_unix(to, :milliseconds),
+      timezone: timezone,
+      lablog: download_lablog,
+      sec_device_id: sec_device_id,
+      sec_sensor_type: sec_sensor_type
+      )
   end
 end

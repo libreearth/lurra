@@ -50,6 +50,7 @@ defmodule LurraWeb.Graph do
       |> assign(:max_value, graph_max(graph, sensor))
       |> assign(:min_value, graph_min(graph, sensor))
       |> assign(:ruler_value, nil)
+      |> assign(:sec_observer, %{device_id: nil, sensor_type: nil})
       |> assign_timezone()
     }
   end
@@ -75,7 +76,12 @@ defmodule LurraWeb.Graph do
   end
 
   def handle_info({:add_sensor, device_id, sensor_type}, socket) do
-    {:noreply, push_event(socket, "add-secondary-data", %{"device_id" => device_id, "sensor_type" => sensor_type})}
+    observer = %{device_id: device_id, sensor_type: sensor_type}
+    {
+      :noreply,
+      socket
+      |> assign(:sec_observer, observer)
+      |> push_event("add-secondary-data", observer)}
   end
 
   def handle_info(:graph_updated, socket) do
