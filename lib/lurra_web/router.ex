@@ -114,6 +114,7 @@ defmodule LurraWeb.Router do
 
     live "/admin", Admin
 
+    live "/buoy_fast_serial", BuoyFastSerial
     live "/buoy_serial", BuoySerial
     live "/buoy_bt", BuoyBt
 
