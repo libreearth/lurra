@@ -4,6 +4,8 @@ defmodule LurraWeb.BuoyBt do
   alias Lurra.Monitoring
   alias Lurra.Events
   alias Lurra.Core.BuoyData
+  alias Surface.Components.Form
+  alias Surface.Components.Form.Select
 
   def mount(_params, _session, socket) do
     {
@@ -12,6 +14,10 @@ defmodule LurraWeb.BuoyBt do
       |> assign(:connected, false)
       |> assign(:extracted_data, 0)
     }
+  end
+
+  def handle_event("change-connection-method", %{"method" => [type]}, socket) do
+    {:noreply, push_event(socket, "change-connection-method", %{method: type})}
   end
 
   def handle_event("connected", %{"date" => date, "uid" => uid, "sensors" => sensors, "battery" => battery, "size" => size }, socket) do

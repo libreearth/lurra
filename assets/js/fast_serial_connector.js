@@ -4,7 +4,7 @@ let fastSerialConnector = {
     connect(hook){
         navigator.serial.requestPort().then(async (port) => {
         this.port = port
-        port.addEventListener("disconnect", () => this.disconnected())
+        port.addEventListener("disconnect", () => this.disconnected(hook))
             await port.open({ baudRate: 115200 })
         
             //text writer setup
@@ -19,9 +19,13 @@ let fastSerialConnector = {
             hook.updateBuoyData()
         })
     },
-    disconnected(){
+    disconnected(hook){
         this.buffer=""
         this.writer = null
+        hook.disconnected()
+    },
+    async sendString(message){
+        this.writer.write(message)
     },
     async readLine(){
         let index = this.buffer.indexOf("\n\r")
@@ -34,9 +38,6 @@ let fastSerialConnector = {
             this.buffer = this.buffer + nread.value
             return await this.readLine()
         }
-    },
-    async write(message){
-        this.writer.write(message)
     }
 }
 

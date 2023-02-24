@@ -16,6 +16,9 @@
   {#else}
     <div class="buoy_info">
       🔴Disconected
+      <Form for={:method} class="long-field" change="change-connection-method">
+        <Select options={["Bluetooth", "Serial USB"]}/>
+      </Form>
     </div>
   {/if}
   <h3>Buoy</h3>
