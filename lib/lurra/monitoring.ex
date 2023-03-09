@@ -58,6 +58,15 @@ defmodule Lurra.Monitoring do
     Repo.all(query)
   end
 
+  def list_observer_sensors_by_unit(unit, archived) do
+    query = from os in ObserverSensor,
+      join: s in Sensor, on: os.sensor_id == s.id,
+      join: o in Lurra.Monitoring.Observer, on: os.observer_id == o.id,
+      where: s.unit == ^unit and o.archived == ^archived,
+      select: {os, o, s}
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single sensor.
 

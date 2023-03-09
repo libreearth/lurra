@@ -1,6 +1,12 @@
 <div>
-  <Form for={:selector} class="long-field" submit="save">
-    <Select options={sensors_options(@unit)}/>
+  <Form for={:selector} class="long-field" change="change" submit="save">
+    <Field name={:sensor}>
+      <Label>Sensors</Label>
+      <Select options={sensors_options(@unit, @only_archived)}/>
+    </Field>
+    <Field name={:only_archived}>
+      <Checkbox opts={checked: @only_archived}/>Only archived sensors
+    </Field>
     <Submit label="Add" /> 
   </Form>
 </div>
