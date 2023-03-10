@@ -5,6 +5,7 @@
       🟢Connected 
       <ul>
         <li><strong>UID:</strong> {@buoy_uid}</li>  
+        <li><strong>Version:</strong> {@buoy_version}</li>  
         <li><strong>Date:</strong> {@buoy_date} UTC</li>
         <li><strong>Sensors:</strong> {print_sensors(@buoy_sensors)}</li>
         <li><strong>Battery:</strong> {@battery}</li>
