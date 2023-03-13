@@ -20,7 +20,7 @@ defmodule LurraWeb.BuoyBt do
     {:noreply, push_event(socket, "change-connection-method", %{method: type})}
   end
 
-  def handle_event("connected", %{"date" => date, "uid" => uid, "version" => version, "sensors" => sensors, "battery" => battery, "size" => size }, socket) do
+  def handle_event("connected", %{"date" => date, "uid" => uid, "version" => version, "sensors" => sensors, "battery" => battery, "data_freq" => data_freq, "size" => size }, socket) do
     BuoyData.register(uid)
     data_size = extracted_data_size(uid)
     {
@@ -35,6 +35,7 @@ defmodule LurraWeb.BuoyBt do
       |> assign(:buoy_sensors, sensors)
       |> assign(:extracted_data, data_size)
       |> assign(:buoy_version, version)
+      |> assign(:data_freq, data_freq)
     }
   end
 
@@ -50,6 +51,7 @@ defmodule LurraWeb.BuoyBt do
       |> assign(:size, nil)
       |> assign(:extracted_data, nil)
       |> assign(:buoy_version, nil)
+      |> assign(:data_freq, nil)
     }
   end
 
