@@ -1,0 +1,9 @@
+<div>
+  <Form for={:selector} class="long-field" submit="save">
+    <Field name={:freq}>
+      <Label>Frecuency (seconds)</Label>
+      <TextInput value={@freq}/>
+    </Field>
+    <Submit label="Set frequency" /> 
+  </Form>
+</div>

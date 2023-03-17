@@ -6,6 +6,9 @@ defmodule LurraWeb.BuoyBt do
   alias Lurra.Core.BuoyData
   alias Surface.Components.Form
   alias Surface.Components.Form.Select
+  alias LurraWeb.Buoy.SelectSecondsDialog
+  alias LurraWeb.Components.Dialog
+
 
   def mount(_params, _session, socket) do
     {
@@ -16,11 +19,25 @@ defmodule LurraWeb.BuoyBt do
     }
   end
 
+  def handle_info({:set_freq, freq}, socket) do
+    {:noreply, push_event(socket, "set_frequency", %{"freq" => freq})}
+  end
+
+  def handle_event("set_frequency", %{}, socket) do
+    LurraWeb.Components.Dialog.show("freq-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("close-freq-dialog", %{}, socket) do
+    LurraWeb.Components.Dialog.hide("freq-dialog")
+    {:noreply, socket}
+  end
+
   def handle_event("change-connection-method", %{"method" => [type]}, socket) do
     {:noreply, push_event(socket, "change-connection-method", %{method: type})}
   end
 
-  def handle_event("connected", %{"date" => date, "uid" => uid, "version" => version, "sensors" => sensors, "battery" => battery, "data_freq" => data_freq, "size" => size }, socket) do
+  def handle_event("connected", %{"date" => date, "uid" => uid, "tx_power" => tx_power, "version" => version, "sensors" => sensors, "battery" => battery, "data_freq" => data_freq, "size" => size }, socket) do
     BuoyData.register(uid)
     data_size = extracted_data_size(uid)
     {
@@ -36,6 +53,7 @@ defmodule LurraWeb.BuoyBt do
       |> assign(:extracted_data, data_size)
       |> assign(:buoy_version, version)
       |> assign(:data_freq, data_freq)
+      |> assign(:tx_power, tx_power)
     }
   end
 
@@ -52,6 +70,7 @@ defmodule LurraWeb.BuoyBt do
       |> assign(:extracted_data, nil)
       |> assign(:buoy_version, nil)
       |> assign(:data_freq, nil)
+      |> assign(:tx_power, nil)
     }
   end
 

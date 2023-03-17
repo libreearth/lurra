@@ -10,6 +10,7 @@
         <li><strong>Sensors:</strong> {print_sensors(@buoy_sensors)}</li>
         <li><strong>Battery:</strong> {@battery}</li>
         <li><strong>Data frequency:</strong> {@data_freq} seconds</li>
+        <li><strong>Bluetooth tx power:</strong> {@tx_power} dB</li>
         <li><strong>Buoy data size:</strong> {@size} bytes</li>
         <li><strong>Extracted data:</strong> {@extracted_data} bytes</li>
         <li id="download_text"></li>
@@ -27,7 +28,8 @@
   <div>
     <button id="connect_button" disabled={@connected}>Connect buoy</button>
     <button id="set_time_button" disabled={not @connected}>Set Time</button>
-    <button id="set_frequency_button" disabled={not @connected}>Set Frequency</button>
+    <button id="set_frequency_button" :on-click="set_frequency" disabled={not @connected}>Set Frequency</button>
+    <button id="set_power_button" disabled={not @connected}>Set tx power</button>
     <button id="clear_button" disabled={not @connected}>Clear buoy data</button>
     <button id="disconnect_and_log_button" disabled={not @connected}>Disconnect & Log</button>
   </div>
@@ -38,5 +40,7 @@
     <button id="upload_button" disabled={not @connected or @extracted_data == 0}>Upload data</button>
     <button id="download_button" disabled={not @connected or @extracted_data == 0}>Download data as csv</button>
   </div>
-  
+  <Dialog id="freq-dialog" title="Frequency" show={false} hideEvent="close-freq-dialog">
+    <SelectSecondsDialog id="freq" freq={@data_freq}/>
+  </Dialog>
 </div>

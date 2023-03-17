@@ -58,11 +58,14 @@ btConnector = {
         let index = this.buffer.indexOf("\n\r")
         if (index!=-1){
             let line = this.buffer.substring(0, index)
-            console.log(line)
+            //console.log(line)
             this.buffer = this.buffer.substring(index + 2)
             resolve(line)
         } else {
-            setTimeout(() => this.rl(resolve), 100)
+            //console.log(".")
+            if (this.device!=null)
+                setTimeout(() => this.rl(resolve), 1000)
+            
         }
     },
     dataRecieved(event, hook) {
@@ -73,6 +76,7 @@ btConnector = {
         for (let i = 0; i < value.byteLength; i++) {
             str += String.fromCharCode(value.getUint8(i))
         }
+        //console.log(str)
         hook.updateDownloadMessage(str)
         this.buffer = this.buffer + str
     }
