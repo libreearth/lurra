@@ -29,7 +29,7 @@
     <button id="connect_button" disabled={@connected}>Connect buoy</button>
     <button id="set_time_button" disabled={not @connected}>Set Time</button>
     <button id="set_frequency_button" :on-click="set_frequency" disabled={not @connected}>Set Frequency</button>
-    <button id="set_power_button" disabled={not @connected}>Set tx power</button>
+    <button id="set_power_button" :on-click="set_power" disabled={not @connected}>Set tx power</button>
     <button id="clear_button" disabled={not @connected}>Clear buoy data</button>
     <button id="disconnect_and_log_button" disabled={not @connected}>Disconnect & Log</button>
   </div>
@@ -42,5 +42,8 @@
   </div>
   <Dialog id="freq-dialog" title="Frequency" show={false} hideEvent="close-freq-dialog">
     <SelectSecondsDialog id="freq" freq={@data_freq}/>
+  </Dialog>
+  <Dialog id="power-dialog" title="Bluetooth transmission power" show={false} hideEvent="close-power-dialog">
+    <SelectPowerDialog id="power" power={@tx_power}/>
   </Dialog>
 </div>

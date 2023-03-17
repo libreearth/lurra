@@ -7,6 +7,7 @@ defmodule LurraWeb.BuoyBt do
   alias Surface.Components.Form
   alias Surface.Components.Form.Select
   alias LurraWeb.Buoy.SelectSecondsDialog
+  alias LurraWeb.Buoy.SelectPowerDialog
   alias LurraWeb.Components.Dialog
 
 
@@ -21,6 +22,20 @@ defmodule LurraWeb.BuoyBt do
 
   def handle_info({:set_freq, freq}, socket) do
     {:noreply, push_event(socket, "set_frequency", %{"freq" => freq})}
+  end
+
+  def handle_info({:set_power, power}, socket) do
+    {:noreply, push_event(socket, "set_power", %{"power" => power})}
+  end
+
+  def handle_event("set_power", %{}, socket) do
+    LurraWeb.Components.Dialog.show("power-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("close-power-dialog", %{}, socket) do
+    LurraWeb.Components.Dialog.hide("power-dialog")
+    {:noreply, socket}
   end
 
   def handle_event("set_frequency", %{}, socket) do

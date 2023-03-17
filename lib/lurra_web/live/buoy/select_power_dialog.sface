@@ -1,0 +1,9 @@
+<div>
+  <Form for={:selector} class="long-field" submit="save">
+    <Field name={:power}>
+      <Label>Transmission power (dB)</Label>
+      <Select options={[-40, -30, -20, -16, -12, -8, -4, 0, 4]} selected={@power}/>
+    </Field>
+    <Submit label="Set power" /> 
+  </Form>
+</div>
