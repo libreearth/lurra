@@ -27,16 +27,24 @@ let fastSerialConnector = {
     async sendString(message){
         this.writer.write(message)
     },
-    async readLine(){
+    async readLine(hook){
+        return new Promise((resolve, reject) => {
+            this.rl(resolve, hook)
+        })
+    },
+    async rl(resolve, hook){
         let index = this.buffer.indexOf("\n\r")
         if (index!=-1){
             let line = this.buffer.substring(0, index)
             this.buffer = this.buffer.substring(index + 2)
-            return line
+            resolve(line)
         } else {
-            let nread = await this.reader.read()
-            this.buffer = this.buffer + nread.value
-            return await this.readLine()
+            this.reader.read().then((nread) => {
+                this.buffer = this.buffer + nread.value
+                if (hook)
+                    hook.updateDownloadMessage(nread.value)
+                this.rl(resolve, hook)
+            })   
         }
     }
 }
