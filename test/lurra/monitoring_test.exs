@@ -72,12 +72,12 @@ defmodule Lurra.MonitoringTest do
 
     test "list_observers/0 returns all observers" do
       observer = observer_fixture()
-      assert Monitoring.list_observers() == [observer]
+      assert Monitoring.list_observers_no_sensors() == [observer]
     end
 
     test "get_observer!/1 returns the observer with given id" do
       observer = observer_fixture()
-      assert Monitoring.get_observer!(observer.id) == observer
+      assert Monitoring.get_observer_no_preload!(observer.id) == observer
     end
 
     test "create_observer/1 with valid data creates a observer" do
@@ -104,7 +104,7 @@ defmodule Lurra.MonitoringTest do
     test "update_observer/2 with invalid data returns error changeset" do
       observer = observer_fixture()
       assert {:error, %Ecto.Changeset{}} = Monitoring.update_observer(observer, @invalid_attrs)
-      assert observer == Monitoring.get_observer!(observer.id)
+      assert observer == Monitoring.get_observer_no_preload!(observer.id)
     end
 
     test "delete_observer/1 deletes the observer" do

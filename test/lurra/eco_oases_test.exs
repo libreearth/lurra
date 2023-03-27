@@ -17,7 +17,7 @@ defmodule Lurra.EcoOasesTest do
 
     test "get_eco_oasis!/1 returns the eco_oasis with given id" do
       eco_oasis = eco_oasis_fixture()
-      assert EcoOases.get_eco_oasis!(eco_oasis.id) == eco_oasis
+      assert EcoOases.get_eco_oasis_no_elements!(eco_oasis.id) == eco_oasis
     end
 
     test "create_eco_oasis/1 with valid data creates a eco_oasis" do
@@ -42,7 +42,7 @@ defmodule Lurra.EcoOasesTest do
     test "update_eco_oasis/2 with invalid data returns error changeset" do
       eco_oasis = eco_oasis_fixture()
       assert {:error, %Ecto.Changeset{}} = EcoOases.update_eco_oasis(eco_oasis, @invalid_attrs)
-      assert eco_oasis == EcoOases.get_eco_oasis!(eco_oasis.id)
+      assert eco_oasis == EcoOases.get_eco_oasis_no_elements!(eco_oasis.id)
     end
 
     test "delete_eco_oasis/1 deletes the eco_oasis" do

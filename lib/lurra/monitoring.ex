@@ -164,6 +164,11 @@ defmodule Lurra.Monitoring do
     |> Enum.map(fn observer -> Repo.preload(observer, :sensors) end)
   end
 
+  def list_observers_no_sensors do
+    Repo.all(Observer)
+  end
+
+
   def list_observers_ordered do
     Repo.all(from o in Observer, order_by: [o.archived, o.id])
     |> Enum.map(fn observer -> Repo.preload(observer, :sensors) end)

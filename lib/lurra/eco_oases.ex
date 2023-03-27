@@ -54,6 +54,8 @@ defmodule Lurra.EcoOases do
   """
   def get_eco_oasis!(id), do: Repo.get!(EcoOasis, id) |> Repo.preload(:elements)
 
+  def get_eco_oasis_no_elements!(id), do: Repo.get!(EcoOasis, id)
+
   @doc """
   Creates a eco_oasis.
 
