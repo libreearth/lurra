@@ -57,6 +57,7 @@ defmodule Lurra.MixProject do
       {:httpoison, "~> 1.7.0"},
       {:elixlsx, "~> 0.5.1"},
       {:nadia, "~> 0.7.0"},
+      {:cowlib, "2.12.1", [env: :prod, hex: "cowlib", override: true]},
       {:emqtt, github: "emqx/emqtt", tag: "1.6.1", system_env: [{"BUILD_WITHOUT_QUIC", "1"}]}
     ]
   end
