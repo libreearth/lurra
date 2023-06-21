@@ -17,6 +17,7 @@ config :lurra, LurraWeb.Endpoint,
   pubsub_server: Lurra.PubSub,
   live_view: [signing_salt: "yW7wEKlE"]
 
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

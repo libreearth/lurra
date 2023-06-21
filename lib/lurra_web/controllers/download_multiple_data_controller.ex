@@ -12,14 +12,15 @@ defmodule LurraWeb.DownloadMultipleDataController do
       |> put_resp_header("content-disposition", ~s[attachment; filename="points.csv"])
       |> send_chunked(:ok)
 
-
       create_csv_stream(sensors, from_time, to_time, interval, timezone, download_lablog)
+      |> Stream.chunk_every(10_000)
       |> Enum.reduce_while(ch_conn, fn chunk, conn ->
         case Plug.Conn.chunk(conn, chunk) do
           {:ok, conn} ->
             {:cont, conn}
 
-          {:error, :closed} ->
+          {:error, reason} ->
+            IO.puts "Error: #{inspect reason}"
             {:halt, conn}
         end
       end)
@@ -28,7 +29,7 @@ defmodule LurraWeb.DownloadMultipleDataController do
     ch_conn
   end
 
-  defp create_csv_stream(sensors, from_time, to_time, interval, timezone, "true") do
+  def create_csv_stream(sensors, from_time, to_time, interval, timezone, "true") do
     sensors =
       sensors
       |> String.split(",")
@@ -62,7 +63,7 @@ defmodule LurraWeb.DownloadMultipleDataController do
     Stream.concat(header, body)
   end
 
-  defp create_csv_stream(sensors, from_time, to_time, interval, timezone, download_lablog) do
+  def create_csv_stream(sensors, from_time, to_time, interval, timezone, download_lablog) do
     sensors =
       sensors
       |> String.split(",")

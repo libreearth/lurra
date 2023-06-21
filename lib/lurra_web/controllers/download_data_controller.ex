@@ -13,6 +13,7 @@ defmodule LurraWeb.DownloadDataController do
 
     Lurra.Repo.transaction(fn ->
       create_csv_stream(device_id, sensor_type, sec_device_id, sec_sensor_type, from_time, to_time, timezone, download_lablog)
+      |> Stream.chunk_every(10_000)
       |> Enum.reduce_while(ch_conn, fn chunk, conn ->
         case Plug.Conn.chunk(conn, chunk) do
           {:ok, conn} ->
