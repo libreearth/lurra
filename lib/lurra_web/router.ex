@@ -156,9 +156,6 @@ defmodule LurraWeb.Router do
     live "/lablogs", LablogLive.Index, :index
     live "/lablogs/new", LablogLive.Index, :new
     live "/lablogs/:id/edit", LablogLive.Index, :edit
-
-    live "/lablogs/:id", LablogLive.Show, :show
-    live "/lablogs/:id/show/edit", LablogLive.Show, :edit
   end
 
   scope "/", LurraWeb do

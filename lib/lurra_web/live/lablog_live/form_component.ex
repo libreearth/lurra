@@ -2,6 +2,7 @@ defmodule LurraWeb.LablogLive.FormComponent do
   use LurraWeb, :live_component
 
   alias Lurra.Events
+  import Lurra.TimezoneHelper
 
   @impl true
   def update(%{lablog: lablog, email: email} = assigns, socket) do
@@ -27,10 +28,13 @@ defmodule LurraWeb.LablogLive.FormComponent do
   end
 
   def handle_event("save", %{"lablog" => lablog_params}, socket) do
-    save_lablog(socket, socket.assigns.action, lablog_params, socket.assigns.email)
+    save_lablog(socket, socket.assigns.action, lablog_params, socket.assigns.email, socket.assigns.timezone)
   end
 
-  defp save_lablog(socket, :edit, lablog_params, _email) do
+  defp save_lablog(socket, :edit, lablog_params, _email, timezone) do
+    lablog_params =
+      lablog_params
+      |> Map.put("timestamp", local_text_to_unix(lablog_params["timestamp"], timezone) )
 
     case Events.update_lablog(socket.assigns.lablog, lablog_params) do
       {:ok, _lablog} ->
@@ -44,11 +48,12 @@ defmodule LurraWeb.LablogLive.FormComponent do
     end
   end
 
-  defp save_lablog(socket, :new, lablog_params, email) do
+  defp save_lablog(socket, :new, lablog_params, email, timezone) do
     lablog_params =
       lablog_params
       |> Map.put("user", email)
-      |> Map.put("timestamp", :erlang.system_time(:millisecond) )
+      |> Map.put("timestamp", local_text_to_unix(lablog_params["timestamp"], timezone) )
+
 
     case Events.create_lablog(lablog_params) do
       {:ok, _lablog} ->

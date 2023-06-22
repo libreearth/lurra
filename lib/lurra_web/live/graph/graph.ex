@@ -1,6 +1,8 @@
 defmodule LurraWeb.Graph do
   use Surface.LiveView
 
+  import Lurra.TimezoneHelper
+
   alias Lurra.Monitoring
   alias Lurra.Events
   alias LurraWeb.Endpoint
@@ -30,7 +32,6 @@ defmodule LurraWeb.Graph do
       {"Custom...", 0}
     ]
 
-  @default_timezone "UTC"
 
   def mount(%{"device_id" => device_id, "sensor_type" => sensor_type}, _session, socket) do
     if connected?(socket) do
@@ -61,10 +62,6 @@ defmodule LurraWeb.Graph do
   defp graph_min(nil, sensor), do: sensor.min_val
   defp graph_min(graph, _sensor), do: graph.min_value
 
-  defp assign_timezone(socket) do
-    timezone = get_connect_params(socket)["timezone"] || @default_timezone
-    assign(socket, timezone: timezone)
-  end
 
   def handle_info(%{event: "event_created", payload: %{ payload: payload, device_id: device_id, type: type}, topic: "events"}, socket) do
     if (device_id == socket.assigns.observer.device_id and type == socket.assigns.sensor.sensor_type) do

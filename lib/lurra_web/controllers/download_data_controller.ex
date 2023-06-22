@@ -1,6 +1,8 @@
 defmodule LurraWeb.DownloadDataController do
   use LurraWeb, :controller
 
+  import Lurra.TimezoneHelper
+
   alias Lurra.Events
 
   def index(conn, %{"device_id" => device_id, "sensor_type" => sensor_type, "sec_device_id" => sec_device_id, "sec_sensor_type" => sec_sensor_type, "from" => from_time, "to" => to_time, "timezone" => timezone, "lablog" => download_lablog}) do
@@ -71,35 +73,17 @@ defmodule LurraWeb.DownloadDataController do
   end
 
   defp create_header(timezone, "true") do
-    {_days, {hours, minutes, _secs}} =
-      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
-
     Stream.unfold(
-      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});Value;Lab-log\n",
+      "time (#{time_difference_from_utc(timezone)});Value;Lab-log\n",
       &String.next_codepoint/1
     )
   end
 
   defp create_header(timezone, _lablog) do
-    {_days, {hours, minutes, _secs}} =
-      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
-
     Stream.unfold(
-      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});Value\n",
+      "time (#{time_difference_from_utc(timezone)});Value\n",
       &String.next_codepoint/1
     )
-  end
-
-  defp format_date(unix_time, timezone) do
-    date = Timex.from_unix(unix_time, :millisecond) |> Timex.to_datetime(timezone)
-
-    "#{date.day}/#{date.month |> zero_pad}/#{date.year} #{date.hour |> zero_pad}:#{date.minute |> zero_pad}:#{date.second |> zero_pad}"
-  end
-
-  defp zero_pad(number, amount \\ 2) do
-    number
-    |> Integer.to_string()
-    |> String.pad_leading(amount, "0")
   end
 
   defp parse(nil), do: 0

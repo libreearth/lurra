@@ -9,6 +9,8 @@
     phx-change="validate"
     phx-submit="save">
   
+    <%= label f, :timestamp %>
+    <%= datetime_local_input f, :timestamp, value: unix_time_to_local(@changeset.data.timestamp,@timezone) %> 
     <%= label f, :message %>
     <%= textarea f, :payload %>
     <%= error_tag f, :payload %>

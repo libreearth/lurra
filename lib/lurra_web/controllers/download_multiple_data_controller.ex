@@ -1,5 +1,6 @@
 defmodule LurraWeb.DownloadMultipleDataController do
   use LurraWeb, :controller
+  import Lurra.TimezoneHelper
 
   alias Lurra.Events
   alias Lurra.Monitoring
@@ -90,21 +91,16 @@ defmodule LurraWeb.DownloadMultipleDataController do
   end
 
   defp create_header(timezone, sensors, "true") do
-    {_days, {hours, minutes, _secs}} =
-      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
 
     Stream.unfold(
-      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});#{header_from_sensor_tuple(sensors)};Lablog\n",
+      "time (#{time_difference_from_utc(timezone)});#{header_from_sensor_tuple(sensors)};Lablog\n",
       &String.next_codepoint/1
     )
   end
 
   defp create_header(timezone, sensors, _download_lablog) do
-    {_days, {hours, minutes, _secs}} =
-      :calendar.time_difference(:calendar.universal_time(), Timex.now(timezone) |> DateTime.to_naive() |> NaiveDateTime.to_erl())
-
     Stream.unfold(
-      "time (UTC+#{hours |> zero_pad}:#{minutes |> zero_pad});#{header_from_sensor_tuple(sensors)}\n",
+      "time (#{time_difference_from_utc(timezone)});#{header_from_sensor_tuple(sensors)}\n",
       &String.next_codepoint/1
     )
   end
@@ -159,18 +155,6 @@ defmodule LurraWeb.DownloadMultipleDataController do
     sensors
     |> Enum.map(fn {observer, sensor} -> "#{observer.name} #{sensor.name} (#{sensor.unit})" end)
     |> Enum.join(";")
-  end
-
-  defp format_date(unix_time, timezone) do
-    date = Timex.from_unix(unix_time, :millisecond) |> Timex.to_datetime(timezone)
-
-    "#{date.day}/#{date.month |> zero_pad}/#{date.year} #{date.hour |> zero_pad}:#{date.minute |> zero_pad}:#{date.second |> zero_pad}"
-  end
-
-  defp zero_pad(number, amount \\ 2) do
-    number
-    |> Integer.to_string()
-    |> String.pad_leading(amount, "0")
   end
 
   defp query_events({device_id, type}, from_time, to_time), do: Events.list_events(device_id, Integer.to_string(type), String.to_integer(from_time), String.to_integer(to_time))

@@ -2,7 +2,6 @@ defmodule LurraWeb.Graph.DownloadData do
   use Surface.LiveComponent
 
   alias Surface.Components.Form
-  alias Surface.Components.Form.Label
   alias Surface.Components.Form.Field
   alias Surface.Components.Form.Label
   alias Surface.Components.Form.DateTimeLocalInput

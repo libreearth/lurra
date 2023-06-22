@@ -1,6 +1,8 @@
 defmodule LurraWeb.LablogLive.Index do
   use LurraWeb, :live_view
 
+  import Lurra.TimezoneHelper
+
   alias Lurra.Events
   alias Lurra.Events.Lablog
 
@@ -12,6 +14,7 @@ defmodule LurraWeb.LablogLive.Index do
       socket
       |> assign( :lablogs, list_lablogs())
       |> assign( :email, email)
+      |> assign_timezone()
     }
   end
 
@@ -29,7 +32,7 @@ defmodule LurraWeb.LablogLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Lablog")
-    |> assign(:lablog, %Lablog{})
+    |> assign(:lablog, %Lablog{} |> Map.put(:timestamp, :erlang.system_time(:millisecond) ))
   end
 
   defp apply_action(socket, :index, _params) do
@@ -47,6 +50,6 @@ defmodule LurraWeb.LablogLive.Index do
   end
 
   defp list_lablogs do
-    Events.list_lablogs_limit(200)
+    Events.list_lablogs_limit(400)
   end
 end

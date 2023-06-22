@@ -9,6 +9,7 @@
       action={@live_action}
       lablog={@lablog}
       email = {@email}
+      timezone = {@timezone}
       return_to={Routes.lablog_index_path(@socket, :index)}
     />
   </.modal>
@@ -18,7 +19,7 @@
 <table>
   <thead>
     <tr>
-      <th>Timestamp</th>
+      <th>Timestamp (<%= time_difference_from_utc(@timezone) %>)</th>
       <th>Payload</th>
       <th>User</th>
 
@@ -28,11 +29,11 @@
   <tbody id="lablogs">
     <%= for lablog <- @lablogs do %>
       <tr id={"lablog-#{lablog.id}"}>
-        <td><%= lablog.timestamp|> DateTime.from_unix!(:millisecond) |> DateTime.to_string |> String.replace("Z", " UTC") %></td>
+        <td><%= format_date(lablog.timestamp, @timezone) %></td>
         <td><%= lablog.payload %></td>
         <td><%= lablog.user %></td>
         <td>
-          <span><%= live_redirect "Show", to: Routes.lablog_show_path(@socket, :show, lablog) %></span>
+          <span><%= live_redirect "Edit", to: Routes.lablog_index_path(@socket, :edit, lablog) %></span>
           <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: lablog.id, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>
