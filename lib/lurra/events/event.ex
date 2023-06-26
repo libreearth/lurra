@@ -13,6 +13,5 @@ defmodule Lurra.Events.Event do
   def changeset(event, attrs) do
     event
     |> cast(attrs, [:device_id, :timestamp, :payload, :type])
-    #|> validate_required([:h3id, :timestamp, :payload, :type])
   end
 end

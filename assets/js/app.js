@@ -44,6 +44,7 @@ let liveSocket = new LiveSocket("/live", Socket, {params: params, hooks: Hooks})
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", info => topbar.show())
 window.addEventListener("phx:page-loading-stop", info => topbar.hide())
+window.addEventListener("phx:reload", () => window.location.reload())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

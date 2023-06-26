@@ -8,8 +8,8 @@ defmodule LurraWeb.WarningLive.Index do
 
   @impl true
   def mount(_params, %{"user_token" => user_token}, socket) do
-    update_user_visit(user_token)
-    {:ok, assign(socket, :warnings, list_warnings())}
+    user = Accounts.get_user_by_session_token(user_token)
+    {:ok, assign(socket, :warnings, list_warnings()) |> assign(:user, user)}
   end
 
   @impl true
@@ -35,6 +35,11 @@ defmodule LurraWeb.WarningLive.Index do
     |> assign(:warning, nil)
   end
 
+  def handle_event("mark-all-as-read", _params, socket) do
+    Lurra.Accounts.mark_all_warnings_as_read(socket.assigns.user)
+    {:noreply, push_event(socket, "reload", %{})}
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     warning = Events.get_warning!(id)
@@ -45,11 +50,6 @@ defmodule LurraWeb.WarningLive.Index do
 
   defp list_warnings do
     Events.list_warnings_limit(100)
-  end
-
-  defp update_user_visit(user_token) do
-    Accounts.get_user_by_session_token(user_token)
-    |> Accounts.update_user(%{last_warning_visit: :erlang.system_time(:millisecond)})
   end
 
   defp get_device_name(device_id) do

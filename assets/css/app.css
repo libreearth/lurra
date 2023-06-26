@@ -94,6 +94,34 @@
 }
 
 
+.header-email {
+  display: flex;
+  flex-direction: row;
+}
+
+/* with rounded corners 
+  when hover still remains white
+  background colors enlight a little
+*/
+.header-warnings {
+  background-color: #0069d9;
+  color: white;
+  margin-right: 4px;
+  border-radius: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header-warnings i {
+  margin-right: 4px;
+}
+
+.header-warnings:hover {
+  background-color: #aaa;
+  color: white;
+}
+
 .logo {
   width: 100px;
   height: 100px;

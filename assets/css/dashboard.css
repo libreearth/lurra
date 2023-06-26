@@ -34,6 +34,7 @@
   .dashboard .observer h2 {
     margin: 4px;
     margin-left: 8px;
+    flex-grow: 1;
   }
   
   .dashboard .observer ul {
@@ -53,6 +54,50 @@
 
   .dashboard .observer li input{
     margin-bottom: 0px;
+  }
+
+  .dashboard .observer .header {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .dashboard .observer .warning {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: #0069d9;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 16px;
+    margin: 4px;
+    height: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  .dashboard .observer .warning i {
+    margin-right: 4px;
+  }
+
+  .dashboard-wrapper .warnings-wrapper {
+    height: 300px;
+    overflow-y: scroll;
+  }
+
+  /* buttons are to the right */
+  .dashboard-wrapper .warnings-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  /* buttons inside warnings-buttons have margin */
+  .dashboard-wrapper .warnings-buttons button {
+    margin: 4px;
+  }
+
+  .dashboard .observer .alarm-count {
+    font-size: small
   }
   
   

@@ -20,7 +20,6 @@
               <%= if not is_nil(@current_user) do %>
                 <li><%= link "Eco Oasis Dashboard", to: Routes.live_path(@conn, LurraWeb.EcoOasisDashboard) %></li>
                 <li><%= link "Sensors Dashboard", to: Routes.live_path(@conn, LurraWeb.Dashboard) %></li>
-                <li><%= link "Warnings (#{(@current_user.last_warning_visit || 0 )|> Lurra.Events.count_new_warnings()})", to: Routes.warning_index_path(@conn, :index) %></li>
                 <li><%= link "Biodiversity", to: Routes.biodiversity_path(@conn, :index) %></li>
                 <%= if not is_nil(@current_user) and @current_user.role == "admin" do %>
                   <li><%= link "Administration", to: Routes.live_path(@conn, LurraWeb.Admin) %></li>

@@ -72,6 +72,15 @@ defmodule Lurra.Accounts do
     |> Repo.update()
   end
 
+  @doc """
+  Resets a user's warnings. After the reset all warnings will be considered new.
+  """
+  def reset_user_warnings(email) do
+    email
+    |> get_user_by_email()
+    |> Repo.update()
+  end
+
 
 
   @doc """
@@ -416,5 +425,65 @@ defmodule Lurra.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  alias Lurra.Account.UserLastObserverWarningVisit
+
+  @doc """
+  Get a UserLastObserverWarningVisit for an user and a device
+  """
+  def get_user_last_observer_warning_visit(user, device_id) do
+    query = from ulowv in UserLastObserverWarningVisit,
+      where: ulowv.user_id == ^user.id and ulowv.device_id == ^device_id,
+      select: ulowv
+    Repo.one(query)
+  end
+
+  @doc """
+  Get the UserLastObserverWarningVisit for of an user
+  """
+  def get_user_last_observer_warning_visit(user) do
+    query = from ulowv in UserLastObserverWarningVisit,
+      where: ulowv.user_id == ^user.id,
+      select: ulowv
+    Repo.all(query)
+  end
+
+  @doc """
+  given a User mark all the warnings as read
+  """
+  def mark_all_warnings_as_read(user) do
+    Enum.each(Lurra.Events.list_warnings_distinct_device_id(), fn device_id ->
+      mark_warnings_as_read(user, device_id)
+    end)
+  end
+
+  @doc """
+  Marks that an user has read the warnings of a device.
+  """
+  def mark_warnings_as_read(user, device_id) do
+    now = :erlang.system_time(:millisecond)
+    case get_user_last_observer_warning_visit(user, device_id) do
+      nil -> create_user_last_observer_warning_visit(user, device_id, now)
+      ulowv -> update_user_last_observer_warning_visit(ulowv, %{timestamp: now})
+    end
+  end
+
+
+  @doc """
+  Creates a user_last_observer_warning_visit record.
+  """
+  def create_user_last_observer_warning_visit(user, device_id, timestamp) do
+    %UserLastObserverWarningVisit{user_id: user.id, device_id: device_id, timestamp: timestamp}
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_last_observer_warning_visit record.
+  """
+  def update_user_last_observer_warning_visit(%UserLastObserverWarningVisit{} = user_last_observer_warning_visit, attrs) do
+    user_last_observer_warning_visit
+    |> UserLastObserverWarningVisit.changeset(attrs)
+    |> Repo.update()
   end
 end

@@ -214,8 +214,19 @@ defmodule Lurra.Events do
   end
 
 
+  @doc """
+  Returns the list of warnings with a limit.
+  """
   def list_warnings_limit(limit) do
     query = from(e in Warning, limit: ^limit, order_by: [desc: e.date])
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns all the warnings different device_id
+  """
+  def list_warnings_distinct_device_id() do
+    query = from(e in Warning, select: e.device_id, distinct: e.device_id, order_by: [desc: e.date])
     Repo.all(query)
   end
 
@@ -300,8 +311,34 @@ defmodule Lurra.Events do
     Warning.changeset(warning, attrs)
   end
 
+  @doc """
+  Returns the number of warnings newer than current_time.
+  """
   def count_new_warnings(current_time) do
     Repo.one(from p in Warning, select: count(p.id), where: p.date > ^current_time)
+  end
+
+  @doc"""
+  Returns the number of warnings not read of an user
+  """
+  def count_user_warnings(user) do
+    user_id = user.id
+    query = from(
+      w in Warning,
+      left_join: ul in Lurra.Account.UserLastObserverWarningVisit,
+      on: w.device_id == ul.device_id and ul.user_id == ^user_id,
+      where: w.date > ul.timestamp or is_nil(ul.timestamp),
+      select: count(w.id)
+    )
+    Repo.one(query)
+  end
+
+  @doc """
+  Returns the list of warnings newer than current_time.
+  """
+  def list_warnings_newer_than(current_time) do
+    query = from(e in Warning, where: e.date > ^current_time, order_by: [desc: e.date])
+    Repo.all(query)
   end
 
   alias Lurra.Events.Lablog
@@ -319,11 +356,17 @@ defmodule Lurra.Events do
     Repo.all(Lablog)
   end
 
+  @doc """
+  Returns the list of lablogs.
+  """
   def list_lablogs_limit(limit) do
     query = from(e in Lablog, limit: ^limit, order_by: [desc: e.timestamp])
     Repo.all(query)
   end
 
+  @doc """
+  Returns the list of lablogs between from_time and to_time
+  """
   def list_lablogs(from_time, to_time) do
     query = from(e in Lablog, where: e.timestamp > ^from_time and e.timestamp < ^to_time, order_by: [asc: e.timestamp])
     Repo.all(query)
@@ -410,6 +453,9 @@ defmodule Lurra.Events do
     Lablog.changeset(lablog, attrs)
   end
 
+  @doc """
+  Returns the number of lablogs newer than current_time.
+  """
   def query_lablogs(from_time, to_time) do
     query = from(e in Lablog, where: e.timestamp > ^from_time and e.timestamp < ^to_time , order_by: [asc: e.timestamp])
     Repo.all(query)

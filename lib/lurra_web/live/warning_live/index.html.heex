@@ -1,5 +1,7 @@
 <h1>Listing Warnings</h1>
 
+<button phx-click="mark-all-as-read" data-confirm="Are you sure?">Mark all as read</button>
+
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.warning_index_path(@socket, :index)}>
     <.live_component
