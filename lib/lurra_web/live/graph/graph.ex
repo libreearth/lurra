@@ -62,6 +62,59 @@ defmodule LurraWeb.Graph do
   defp graph_min(nil, sensor), do: sensor.min_val
   defp graph_min(graph, _sensor), do: graph.min_value
 
+  def render(assigns) do
+    ~F"""
+      <div class="container graph">
+        <div  class="title-back"><Link label="Back" to={{:javascript, "history.back()"}} /></div>
+          <div class="graph-title">
+              <h2>{@observer.name} - {@sensor.name} </h2>
+          </div>
+          <div class="container">
+              <div class="column centered-text">
+                  <Form for={:time} change="time-change" submit="time-change" class="row-form">
+                      <Field name="time_window">
+                          <Label/><Select options={@time_options} opts={value: @time}/>
+                      </Field>
+                      <Field :if={@time==0} name="hours">
+                          <Label/><NumberInput value={@hours} opts={step: :any}/>
+                      </Field>
+                  </Form>
+              </div>
+              <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit} data-rulerval={@ruler_value}></svg>
+              <div class="graph-button">
+                  <i class="fa fa-flask" :on-click="toogle-lablogs" title="Toogle lablogs"></i>
+                  <i class="fa fa-plus" :on-click="show-add-secondary-sensor-dialog" title="Add secondary sensor"></i>
+                  <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
+                  <i class="fa fa-ruler" :on-click="show-ruler-dialog" title="Set ruler"></i>
+                  <i class="fa fa-download" :on-click="show-download-dialog" title="Download data"></i>
+                  <i class="fa fa-arrows-v" :on-click="show-vertical-dialog" title="Vertical axis"></i>
+                  <i :if={@mode=="explore"} :on-click="activate-mode-play" class="fa fa-play" title="Resume real time data"></i>
+                  <i :if={@mode=="play"} :on-click="activate-mode-explore" class="fa fa-pause" title="Pause real time data"></i>
+                  <i :if={@mode=="explore"} :on-click="arrow-right" class="fa fa-arrow-right" title="Move left"></i>
+              </div>
+          </div>
+      </div>
+      <Dialog id="download-data-dialog" title="Download data" show={false} hideEvent="close-download-dialog">
+          <DownloadData id="download-data"
+              time={@time}
+              timezone={@timezone}
+              device_id={@observer.device_id}
+              sensor_type={@sensor.sensor_type}
+              sec_device_id={@sec_observer.device_id}
+              sec_sensor_type={@sec_observer.sensor_type}
+              />
+      </Dialog>
+      <Dialog id="vertical-limits-dialog" title="Vertical limits" show={false} hideEvent="close-vertical-dialog">
+          <VerticalLimits id="vertical-limits" max={@max_value} min={@min_value} device_id={@observer.device_id} sensor_type={@sensor.sensor_type}/>
+      </Dialog>
+      <Dialog id="ruler-dialog" title="Ruler value" show={false} hideEvent="close-ruler-dialog">
+          <Ruler id="ruler" value={@ruler_value}/>
+      </Dialog>
+      <Dialog id="add-secondary-sensor-dialog" title="Select Secondary Sensor" show={false} hideEvent="close-add-secondary-sensor-dialog">
+          <SelectSecondarySensor id="add-secondary-sensor" unit={@sensor.unit}/>
+      </Dialog>
+    """
+  end
 
   def handle_info(%{event: "event_created", payload: %{ payload: payload, device_id: device_id, type: type}, topic: "events"}, socket) do
     if (device_id == socket.assigns.observer.device_id and type == socket.assigns.sensor.sensor_type) do
@@ -99,6 +152,10 @@ defmodule LurraWeb.Graph do
       |> assign(:ruler_value, value)
       |> push_event("update-chart", %{})
     }
+  end
+
+  def handle_event("toogle-lablogs", _params, socket) do
+    {:noreply, socket |> push_event("toogle-lablogs", %{})}
   end
 
   def handle_event("time-change", %{"time" => %{"time_window" => "0", "hours" => hours}}, socket) do

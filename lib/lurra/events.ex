@@ -265,6 +265,20 @@ defmodule Lurra.Events do
   end
 
   @doc """
+  Inserts a warning given a device_id and a message
+  """
+  def insert_warning(device_id, message) do
+    valid_attrs = %{device_id: device_id, message: message, date: :erlang.system_time(:millisecond)}
+    case Lurra.Events.create_warning(valid_attrs) do
+      {:ok, _warning} ->
+       nil
+      error ->
+       IO.inspect error
+       nil
+     end
+  end
+
+  @doc """
   Updates a warning.
 
   ## Examples
