@@ -52,6 +52,7 @@ defmodule LurraWeb.Graph do
       |> assign(:min_value, graph_min(graph, sensor))
       |> assign(:ruler_value, nil)
       |> assign(:sec_observer, %{device_id: nil, sensor_type: nil})
+      |> assign(:time_window, nil)
       |> assign_timezone()
     }
   end
@@ -82,6 +83,7 @@ defmodule LurraWeb.Graph do
               </div>
               <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit} data-rulerval={@ruler_value}></svg>
               <div class="graph-button">
+                  <i class="fa fa-wave-square" :on-click="calculate-swings" title="Calculate swings"></i>
                   <i class="fa fa-flask" :on-click="toogle-lablogs" title="Toogle lablogs"></i>
                   <i class="fa fa-plus" :on-click="show-add-secondary-sensor-dialog" title="Add secondary sensor"></i>
                   <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
@@ -112,6 +114,9 @@ defmodule LurraWeb.Graph do
       </Dialog>
       <Dialog id="add-secondary-sensor-dialog" title="Select Secondary Sensor" show={false} hideEvent="close-add-secondary-sensor-dialog">
           <SelectSecondarySensor id="add-secondary-sensor" unit={@sensor.unit}/>
+      </Dialog>
+      <Dialog id="swings-dialog" title="Swings" show={false} hideEvent="close-swings-dialog">
+        {@swings}
       </Dialog>
     """
   end
@@ -152,6 +157,25 @@ defmodule LurraWeb.Graph do
       |> assign(:ruler_value, value)
       |> push_event("update-chart", %{})
     }
+  end
+
+  def handle_event("calculate-swings", _params, socket) do
+    swings =
+      if not is_nil(socket.assigns.ruler_value) do
+        {from_time, to_time} = socket.assigns.time_window
+        type = to_string(socket.assigns.sensor.sensor_type)
+        {:ok, s} = Lurra.Events.Calculations.calculate_number_of_swings(from_time, to_time, socket.assigns.ruler_value, socket.assigns.observer.device_id, type)
+        "Number of swings: #{s}"
+      else
+        "Please set a ruler value"
+      end
+    LurraWeb.Components.Dialog.show("swings-dialog")
+    {:noreply, socket |> assign(:swings, swings)}
+  end
+
+  def handle_event("close-swings-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.hide("swings-dialog")
+    {:noreply, socket |> assign(:swings, "")}
   end
 
   def handle_event("toogle-lablogs", _params, socket) do
@@ -201,7 +225,7 @@ defmodule LurraWeb.Graph do
         "sec_events" => events_to_map(sec_events),
         "lablogs" => lablogs_to_map(lablogs)
       },
-      socket
+      socket |> assign(:time_window, {from_time, to_time})
     }
   end
 
@@ -214,7 +238,7 @@ defmodule LurraWeb.Graph do
         "events" => events_to_map(events),
         "lablogs" => lablogs_to_map(lablogs)
       },
-      socket
+      socket |> assign(:time_window, {from_time, to_time})
     }
   end
 
