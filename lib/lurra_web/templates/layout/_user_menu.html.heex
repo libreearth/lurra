@@ -2,7 +2,9 @@
 <%= if @current_user do %>
   <li>
     <div class="header-email">
-      <a class="header-warnings" href={Routes.warning_index_path(@conn, :index)}><i class="fa fa-bell"></i><%=Lurra.Events.count_user_warnings(@current_user)%></a>
+      <%= if @current_user.can_see_warnings do %>
+        <a class="header-warnings" href={Routes.warning_index_path(@conn, :index)}><i class="fa fa-bell"></i><%=Lurra.Events.count_user_warnings(@current_user)%></a>
+      <% end %>
       <%= @current_user.email %>
     </div>
   </li>

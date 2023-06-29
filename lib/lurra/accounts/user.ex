@@ -8,6 +8,7 @@ defmodule Lurra.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :role, :string
+    field :can_see_warnings, :boolean, default: false
 
     timestamps()
   end
@@ -141,6 +142,6 @@ defmodule Lurra.Accounts.User do
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :role, :confirmed_at])
+    |> cast(attrs, [:email, :role, :confirmed_at, :can_see_warnings])
   end
 end

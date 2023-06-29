@@ -22,7 +22,7 @@ defmodule LurraWeb.Dashboard do
     socket = socket
     |> assign(:observers, observers)
     |> assign(:readings, initial_readings())
-    |> assign(:warnings, Lurra.Events.list_warnings_limit(@last_warnings_limit))
+    |> assign(:warnings, read_warnigns(user))
     |> assign(:read_warnings_map, read_warnings_map(user))
     |> assign(:show_download_form, false)
     |> assign(:warnings_to_show, [])
@@ -44,6 +44,7 @@ defmodule LurraWeb.Dashboard do
               show_checks={false}
               observer={box}
               readings={filter_device_readings(@readings, box.device_id)}
+              can_see_warnings = {@user.can_see_warnings}
               warnings={filter_warnings(@warnings, @read_warnings_map, box.device_id)}/>
           {/for}
         </div>
@@ -130,6 +131,14 @@ defmodule LurraWeb.Dashboard do
     warnings
     |> Enum.filter(fn warning -> warning.device_id == device_id end)
     |> Enum.filter(fn warning -> Map.get(read_warnings_map, warning.device_id, 0) < warning.date end)
+  end
+
+  defp read_warnigns(user) do
+    if user.can_see_warnings do
+      Lurra.Events.list_warnings_limit(@last_warnings_limit)
+    else
+      []
+    end
   end
 
   def initial_readings() do

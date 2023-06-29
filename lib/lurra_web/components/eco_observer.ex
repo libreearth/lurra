@@ -13,6 +13,7 @@ defmodule LurraWeb.Components.EcoObserver do
   prop readings, :map, required: true
   prop show_checks, :boolean, required: true
   prop sensors_checked, :list, required: false, default: []
+  prop can_see_warnings, :boolean, required: true
   prop warnings, :list, required: false, default: []
 
   def render(assigns) do
@@ -20,7 +21,7 @@ defmodule LurraWeb.Components.EcoObserver do
     <div class="observer">
       <div class="header" phx-click="show_warnings" phx-value-id={@observer.device_id}>
         <h2>{@observer.name}</h2>
-        {#if not Enum.empty?(@warnings)}
+        {#if @can_see_warnings and not Enum.empty?(@warnings)}
           <div class="warning"><i class="fa fa-bell"></i><div class="alarm-count">{length(@warnings)}</div></div>
         {/if}
       </div>

@@ -13,6 +13,10 @@
     <%= label f, :role %>
     <%= select f, :role, ["regular", "admin"] %>
     <%= error_tag f, :role %>
+
+    <%= label f, :can_see_warnings %>
+    <%= checkbox f, :can_see_warnings %>
+    <%= error_tag f, :can_see_warnings %>
   
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
