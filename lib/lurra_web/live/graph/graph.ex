@@ -17,6 +17,7 @@ defmodule LurraWeb.Graph do
   alias LurraWeb.Graph.VerticalLimits
   alias LurraWeb.Graph.Ruler
   alias LurraWeb.Graph.SelectSecondarySensor
+  alias LurraWeb.Graph.SelectDateDialog
 
   @events_topic "events"
   @time_options [
@@ -83,10 +84,11 @@ defmodule LurraWeb.Graph do
               </div>
               <svg id="chart" :hook="Chart" data-minval={@min_value} data-maxval={@max_value} data-unit={@sensor.unit} data-rulerval={@ruler_value}></svg>
               <div class="graph-button">
+                  <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
+                  <i :if={@mode=="explore"} class="fa fa-calendar" :on-click="show-dates-dialog" title="Select dates"></i>
                   <i class="fa fa-wave-square" :on-click="calculate-swings" title="Calculate swings"></i>
                   <i class="fa fa-flask" :on-click="toogle-lablogs" title="Toogle lablogs"></i>
                   <i class="fa fa-plus" :on-click="show-add-secondary-sensor-dialog" title="Add secondary sensor"></i>
-                  <i :if={@mode=="explore"} :on-click="arrow-left" class="fa fa-arrow-left" title="Move left"></i>
                   <i class="fa fa-ruler" :on-click="show-ruler-dialog" title="Set ruler"></i>
                   <i class="fa fa-download" :on-click="show-download-dialog" title="Download data"></i>
                   <i class="fa fa-arrows-v" :on-click="show-vertical-dialog" title="Vertical axis"></i>
@@ -96,7 +98,7 @@ defmodule LurraWeb.Graph do
               </div>
           </div>
       </div>
-      <Dialog id="download-data-dialog" title="Download data" show={false} hideEvent="close-download-dialog">
+      <Dialog id="download-data-dialog" title={"Download data (#{time_difference_from_utc(@timezone)})"} show={false} hideEvent="close-download-dialog">
           <DownloadData id="download-data"
               time={@time}
               timezone={@timezone}
@@ -117,6 +119,9 @@ defmodule LurraWeb.Graph do
       </Dialog>
       <Dialog id="swings-dialog" title="Swings" show={false} hideEvent="close-swings-dialog">
         {@swings}
+      </Dialog>
+      <Dialog id="dates-dialog" title={"Select dates (#{time_difference_from_utc(@timezone)})"} show={false} hideEvent="close-dates-dialog">
+        <SelectDateDialog id="dates" from={elem(@time_window, 0)} to={elem(@time_window, 1)} timezone={@timezone}/>
       </Dialog>
     """
   end
@@ -157,6 +162,30 @@ defmodule LurraWeb.Graph do
       |> assign(:ruler_value, value)
       |> push_event("update-chart", %{})
     }
+  end
+
+  def handle_info({:time_window_updated, from_txt , to_txt}, socket) do
+    from = local_text_to_unix(from_txt, socket.assigns.timezone)
+    to = local_text_to_unix(to_txt, socket.assigns.timezone)
+    hours = div((to - from), 3600000)
+    LurraWeb.Components.Dialog.hide("dates-dialog")
+    {
+      :noreply,
+      socket
+      |> assign(:time, 0)
+      |> assign(:hours, hours)
+      |> push_event("window-changed-from-to", %{from: from, to: to})
+    }
+  end
+
+  def handle_event("show-dates-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.show("dates-dialog")
+    {:noreply, socket}
+  end
+
+  def handle_event("close-dates-dialog", _params, socket) do
+    LurraWeb.Components.Dialog.hide("dates-dialog")
+    {:noreply, socket}
   end
 
   def handle_event("calculate-swings", _params, socket) do
