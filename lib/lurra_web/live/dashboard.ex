@@ -59,7 +59,7 @@ defmodule LurraWeb.Dashboard do
             <table>
               <thead>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>Timestamp ({time_difference_from_utc(@timezone)})</th>
                   <th>Message</th>
                 </tr>
               </thead>

@@ -18,7 +18,7 @@
 <table>
   <thead>
     <tr>
-      <th>Date</th>
+      <th>Date (<%= time_difference_from_utc(@timezone) %>)</th>
       <th>Device</th>
       <th>Sensor type</th>
       <th>Description</th>
@@ -29,7 +29,7 @@
   <tbody id="warnings">
     <%= for warning <- @warnings do %>
       <tr id={"warning-#{warning.id}"}>
-        <td><%= warning.date|> DateTime.from_unix!(:millisecond) |> DateTime.to_string |> String.replace("Z", " UTC") %></td>
+        <td><%= format_date(warning.date, @timezone) %></td>
         <td><%= get_device_name(warning.device_id)  %></td>
         <td><%= get_sensor_name(warning.sensor_type) %></td>
         <td><%= warning.description %></td>

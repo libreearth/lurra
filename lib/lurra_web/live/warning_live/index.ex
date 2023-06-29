@@ -1,6 +1,8 @@
 defmodule LurraWeb.WarningLive.Index do
   use LurraWeb, :live_view
 
+  import Lurra.TimezoneHelper
+
   alias Lurra.Events
   alias Lurra.Events.Warning
   alias Lurra.Monitoring
@@ -9,7 +11,13 @@ defmodule LurraWeb.WarningLive.Index do
   @impl true
   def mount(_params, %{"user_token" => user_token}, socket) do
     user = Accounts.get_user_by_session_token(user_token)
-    {:ok, assign(socket, :warnings, list_warnings()) |> assign(:user, user)}
+    {
+      :ok,
+      socket
+      |> assign(:warnings, list_warnings())
+      |> assign(:user, user)
+      |> assign_timezone()
+    }
   end
 
   @impl true
