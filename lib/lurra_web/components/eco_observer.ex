@@ -21,7 +21,7 @@ defmodule LurraWeb.Components.EcoObserver do
     <div class="observer">
       <div class="header" phx-click="show_warnings" phx-value-id={@observer.device_id}>
         <h2>{@observer.name}</h2>
-        {#if @can_see_warnings and not Enum.empty?(@warnings)}
+        {#if not is_nil(@can_see_warnings) and @can_see_warnings and not Enum.empty?(@warnings)}
           <div class="warning"><i class="fa fa-bell"></i><div class="alarm-count">{length(@warnings)}</div></div>
         {/if}
       </div>
